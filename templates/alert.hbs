@@ -1,0 +1,13 @@
+<div class="alert{{#if success}} alert--green{{else}} alert--red{{/if}} hard--bottom">
+	{{#if message}}<h6 class="push-half--bottom">{{message}}</h6>{{/if}}
+	{{#if errors}}
+		<ul class="list--no-style push-half--bottom">
+			{{#each errors}}
+				<li>
+					<i class="icon--warning"></i>
+					{{this}}
+				</li>
+			{{/each}}
+		</ul>
+	{{/if}}
+</div>
