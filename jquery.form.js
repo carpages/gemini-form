@@ -4,7 +4,8 @@ define(['jquery.boiler', 'modules/ajaxform/templates'], function($, T){
     defaults: {
       onSubmit: false,
       onResponse: false,
-      alertTarget: false
+      alertTarget: false,
+      templates: {}
     },
 
     events: {
@@ -12,11 +13,16 @@ define(['jquery.boiler', 'modules/ajaxform/templates'], function($, T){
     },
 
     init: function(){
-      if(this.settings.alertTarget){
-        this.$alert = this.$el.find(this.settings.alertTarget).hide();
+      var plugin = this;
+
+      //Extend the templates
+      plugin.T = $.extend(T, plugin.settings.templates);
+
+      if(plugin.settings.alertTarget){
+        plugin.$alert = plugin.$el.find(plugin.settings.alertTarget).hide();
       } else {
-        this.$alert = $('<div/>').hide();
-        this.$el.prepend(this.$alert);
+        plugin.$alert = $('<div/>').hide();
+        plugin.$el.prepend(plugin.$alert);
       }
     },
 
@@ -71,7 +77,7 @@ define(['jquery.boiler', 'modules/ajaxform/templates'], function($, T){
     alert: function(data){
       var plugin = this;
 
-      plugin.$alert[0].innerHTML = T.alert(data);
+      plugin.$alert[0].innerHTML = plugin.T.alert(data);
       plugin.$alert.show();
     }
   });
