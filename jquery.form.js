@@ -1,4 +1,4 @@
-define(['jquery.boiler', 'modules/ajaxform/templates'], function($, T){
+define(['jquery.boiler', 'jquery.form.templates'], function($, T){
 
   $.boiler('ajaxform', {
     defaults: {
