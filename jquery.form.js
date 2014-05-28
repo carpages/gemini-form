@@ -1,10 +1,98 @@
+/**
+ * @fileoverview
+
+A jQuery plugin that submits forms using ajax, and returns results based on the
+[JSend standard](http://labs.omniti.com/labs/jsend).
+
+### Notes
+- Alerted results are generated using an [alert template](http://stash.carpages.ca/projects/GEM/repos/jquery-form/browse/templates/alert.hbs)
+- The form's action is used to make the ajax request
+
+ *
+ * @namespace jquery.form
+ * @copyright Carpages.ca 2014
+ * @author Matt Rose <matt@mattrose.ca>
+ *
+ * @requires jquery
+ *
+ * @prop {function} onSubmit {@link jquery.form#onSubmit}
+ * @prop {function} onResponse {@link jquery.form#onResponse}
+ * @prop {string} alertTarget {@link jquery.form#alertTarget}
+ * @prop {object} templates {@link jquery.form#templates}
+ *
+ * @example
+  <html>
+    <form id="js-ajax-form" action="http://fake.carpages.ca/ajax/url/" method="post">
+      <div>
+           <label for="name">Name:</label>
+           <input type="text" name="name" id="name" value="" tabindex="1" />
+      </div>
+
+      <div>
+        <label for="select-choice">Select Dropdown Choice:</label>
+        <select name="select-choice" id="select-choice">
+          <option value="Choice 1">Choice 1</option>
+          <option value="Choice 2">Choice 2</option>
+          <option value="Choice 3">Choice 3</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="textarea">Textarea:</label>
+        <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
+      </div>
+
+      <label>
+        <input type="checkbox" name="checkbox" id="checkbox" />
+        Checkbox
+      </label>
+
+      <input class="button" type="submit" value="Submit" />
+    </form>
+  </html>
+ *
+ * @example
+  $('#js-ajax-form').form();
+ */
+
 define(['jquery.boiler', 'jquery.form.templates'], function($, T){
 
   $.boiler('ajaxform', {
     defaults: {
+      /**
+       * Callback function after the user has submitted the form
+       *
+       * @name jquery.form#onSubmit
+       * @type function
+       * @default false
+       */
       onSubmit: false,
+      /**
+       * Callback function after the server has returned a response
+       *
+       * @name jquery.form#onResponse
+       * @type function
+       * @default false
+       */
       onResponse: false,
+      /**
+       * Selector of container for the alert message
+       *
+       * *Note:* By default, it prepends it to the form
+       *
+       * @name jquery.form#alertTarget
+       * @type string
+       * @default false
+       */
       alertTarget: false,
+      /**
+       * Precompiled Handlebar templates to replace default.
+       * Expecting 'alert' for the alert message.
+       *
+       * @name jquery.form#templates
+       * @type object
+       * @default {}
+       */
       templates: {}
     },
 
@@ -26,6 +114,14 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
       }
     },
 
+    /**
+     * Callback function when the user submits the form
+     *
+     * @private
+     * @method
+     * @name jquery.form#_onSubmit
+     * @param {object} e Event object
+    **/
     _onSubmit: function(e){
       e.preventDefault();
 
@@ -74,6 +170,13 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
       });
     },
 
+    /**
+     * Alerts the user with a message
+     *
+     * @method
+     * @name jquery.form#alert
+     * @param {object} data The data to send to the alert template
+    **/
     alert: function(data){
       var plugin = this;
 
