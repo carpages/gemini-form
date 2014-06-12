@@ -1,7 +1,7 @@
 /**
  * @fileoverview
 
-A jQuery plugin that submits forms using ajax, and returns results based on the
+A Gemini plugin that submits forms using ajax, and returns results based on the
 [JSend standard](http://labs.omniti.com/labs/jsend).
 
 ### Notes
@@ -9,16 +9,16 @@ A jQuery plugin that submits forms using ajax, and returns results based on the
 - The form's action is used to make the ajax request
 
  *
- * @namespace jquery.form
+ * @namespace gemini.form
  * @copyright Carpages.ca 2014
  * @author Matt Rose <matt@mattrose.ca>
  *
- * @requires jquery
+ * @requires gemini
  *
- * @prop {function} onSubmit {@link jquery.form#onSubmit}
- * @prop {function} onResponse {@link jquery.form#onResponse}
- * @prop {string} alertTarget {@link jquery.form#alertTarget}
- * @prop {object} templates {@link jquery.form#templates}
+ * @prop {function} onSubmit {@link gemini.form#onSubmit}
+ * @prop {function} onResponse {@link gemini.form#onResponse}
+ * @prop {string} alertTarget {@link gemini.form#alertTarget}
+ * @prop {object} templates {@link gemini.form#templates}
  *
  * @example
   <html>
@@ -52,17 +52,17 @@ A jQuery plugin that submits forms using ajax, and returns results based on the
   </html>
  *
  * @example
-  $('#js-ajax-form').form();
+  G('#js-ajax-form').form();
  */
 
-define(['jquery.boiler', 'jquery.form.templates'], function($, T){
+define(['gemini', 'gemini.form.templates'], function($, T){
 
   $.boiler('ajaxform', {
     defaults: {
       /**
        * Callback function after the user has submitted the form
        *
-       * @name jquery.form#onSubmit
+       * @name gemini.form#onSubmit
        * @type function
        * @default false
        */
@@ -70,7 +70,7 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
       /**
        * Callback function after the server has returned a response
        *
-       * @name jquery.form#onResponse
+       * @name gemini.form#onResponse
        * @type function
        * @default false
        */
@@ -80,7 +80,7 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
        *
        * *Note:* By default, it prepends it to the form
        *
-       * @name jquery.form#alertTarget
+       * @name gemini.form#alertTarget
        * @type string
        * @default false
        */
@@ -89,7 +89,7 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
        * Precompiled Handlebar templates to replace default.
        * Expecting 'alert' for the alert message.
        *
-       * @name jquery.form#templates
+       * @name gemini.form#templates
        * @type object
        * @default {}
        */
@@ -119,7 +119,7 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
      *
      * @private
      * @method
-     * @name jquery.form#_onSubmit
+     * @name gemini.form#_onSubmit
      * @param {object} e Event object
     **/
     _onSubmit: function(e){
@@ -174,7 +174,7 @@ define(['jquery.boiler', 'jquery.form.templates'], function($, T){
      * Alerts the user with a message
      *
      * @method
-     * @name jquery.form#alert
+     * @name gemini.form#alert
      * @param {object} data The data to send to the alert template
     **/
     alert: function(data){

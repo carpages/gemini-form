@@ -1,9 +1,9 @@
 {
-  "name": "jquery-form",
+  "name": "gemini-form",
   "authors": [
     {"name": "Matt Rose", "email": "matt@mattrose.ca"}
   ],
   "dependencies": {
-    "jquery-boiler": "0.1.x"
+    "gemini-loader": "ssh://git@stash.carpages.ca/gem/gemini-loader.git"
   }
 }
