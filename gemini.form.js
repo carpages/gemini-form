@@ -57,7 +57,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
 define(['gemini', 'gemini.form.templates'], function($, T){
 
-  $.boiler('ajaxform', {
+  $.boiler('form', {
     defaults: {
       /**
        * Callback function after the user has submitted the form
