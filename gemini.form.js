@@ -5,7 +5,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 [JSend standard](http://labs.omniti.com/labs/jsend).
 
 ### Notes
-- Alerted results are generated using an [alert template](http://stash.carpages.ca/projects/GEM/repos/jquery-form/browse/templates/alert.hbs)
+- Alerted results are generated using an [alert template](https://github.com/carpages/gemini-form/blob/master/templates/alert.hbs)
 - The form's action is used to make the ajax request
 
  *
