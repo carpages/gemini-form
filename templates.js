@@ -27,13 +27,13 @@ this["Templates"]["Default"]["Form"]["alert"] = Handlebars.template({"1":functio
 },"5":function(depth0,helpers,partials,data) {
     var helper;
 
-  return "<h6 class=\"push-half-bottom\">"
+  return "<h6 class=\"form-alert__title\">"
     + this.escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"message","hash":{},"data":data}) : helper)))
     + "</h6>";
 },"7":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "    <ul class=\"push-half-bottom\">\n"
+  return "    <ul class=\"form-alert__list\">\n"
     + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.errors : depth0),{"name":"each","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "    </ul>\n";
 },"8":function(depth0,helpers,partials,data) {

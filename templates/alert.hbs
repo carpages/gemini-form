@@ -1,7 +1,7 @@
 <div class="form-alert{{#if success}} form-alert--success{{else}} form-alert--fail{{/if}}">
-  {{#if message}}<h6 class="push-half-bottom">{{message}}</h6>{{/if}}
+  {{#if message}}<h6 class="form-alert__title">{{message}}</h6>{{/if}}
   {{#if errors}}
-    <ul class="push-half-bottom">
+    <ul class="form-alert__list">
       {{#each errors}}
         <li>
           {{this}}
