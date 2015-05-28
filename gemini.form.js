@@ -55,7 +55,24 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
   G('#js-ajax-form').form();
  */
 
-define(['gemini', 'gemini.form.templates'], function($, T){
+(function(factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define([
+      'gemini',
+      'gemini.form.templates'
+    ], factory);
+  } else if (typeof exports === 'object') {
+    // Node/CommonJS
+    module.exports = factory(
+      require('gemini'),
+      require('./templates.js')
+    );
+  } else {
+    // Browser globals
+    factory(G, Templates.Default.Form);
+  }
+}(function($, T) {
 
   $.boiler('form', {
     defaults: {
@@ -189,4 +206,4 @@ define(['gemini', 'gemini.form.templates'], function($, T){
   // This way you don't need to require both jquery and the plugin
   return $;
 
-});
+}));

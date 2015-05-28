@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gemini Form Edge Test</title>
+
+  <link rel="stylesheet" href="gemini-form.test.css" media="screen">
+
+  <script>window.G={D:{_qj:[]}};G.Q=function(k){G.D._qj.push(k)};//0.1.0</script>
+</head>
+<body>
+
+  <form id="js-ajax-form" action="http://fake.carpages.ca/ajax/url/" method="post">
+    <div>
+         <label for="name">Name:</label>
+         <input type="text" name="name" id="name" value="" tabindex="1" />
+    </div>
+
+    <div>
+      <label for="select-choice">Select Dropdown Choice:</label>
+      <select name="select-choice" id="select-choice">
+        <option value="Choice 1">Choice 1</option>
+        <option value="Choice 2">Choice 2</option>
+        <option value="Choice 3">Choice 3</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="textarea">Textarea:</label>
+      <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
+    </div>
+
+    <label>
+      <input type="checkbox" name="checkbox" id="checkbox" />
+      Checkbox
+    </label>
+
+    <input class="button" type="submit" value="Submit" />
+  </form>
+
+  <!-- Load JS. -->
+  <script data-main="gemini-form.edge" src="../bower_components/requirejs/require.js"></script>
+</body>
+</html>

@@ -1,66 +1,57 @@
-define(['handlebars'], function(Handlebars) {
+(function(factory) {
 
-this["JST"] = this["JST"] || {};
+if (typeof define === 'function' && define.amd) {
 
-this["JST"]["alert"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, functionType="function", escapeExpression=this.escapeExpression, self=this;
+define(['handlebars'], factory);
 
-function program1(depth0,data) {
-  
-  
-  return " alert--green";
-  }
+} else if (typeof exports === 'object') {
 
-function program3(depth0,data) {
-  
-  
-  return " alert--red";
-  }
+module.exports = factory(require('handlebars'));
 
-function program5(depth0,data) {
-  
-  var buffer = "", stack1, helper;
-  buffer += "<h6 class=\"push-half--bottom\">";
-  if (helper = helpers.message) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.message); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
+} else {
+
+factory(Handlebars);
+
+}
+
+}(function(Handlebars) {
+
+this["Templates"] = this["Templates"] || {};
+this["Templates"]["Default"] = this["Templates"]["Default"] || {};
+this["Templates"]["Default"]["Form"] = this["Templates"]["Default"]["Form"] || {};
+
+this["Templates"]["Default"]["Form"]["alert"] = Handlebars.template({"1":function(depth0,helpers,partials,data) {
+    return " form-alert--success";
+},"3":function(depth0,helpers,partials,data) {
+    return " form-alert--fail";
+},"5":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<h6 class=\"push-half-bottom\">"
+    + this.escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"message","hash":{},"data":data}) : helper)))
     + "</h6>";
-  return buffer;
-  }
+},"7":function(depth0,helpers,partials,data) {
+    var stack1;
 
-function program7(depth0,data) {
-  
-  var buffer = "", stack1;
-  buffer += "\n		<ul class=\"list--no-style push-half--bottom\">\n			";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.errors), {hash:{},inverse:self.noop,fn:self.program(8, program8, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n		</ul>\n	";
-  return buffer;
-  }
-function program8(depth0,data) {
-  
-  var buffer = "";
-  buffer += "\n				<li>\n					<i class=\"icon--warning\"></i>\n					"
-    + escapeExpression((typeof depth0 === functionType ? depth0.apply(depth0) : depth0))
-    + "\n				</li>\n			";
-  return buffer;
-  }
+  return "    <ul class=\"push-half-bottom\">\n"
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.errors : depth0),{"name":"each","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "    </ul>\n";
+},"8":function(depth0,helpers,partials,data) {
+    return "        <li>\n          "
+    + this.escapeExpression(this.lambda(depth0, depth0))
+    + "\n        </li>\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1;
 
-  buffer += "<div class=\"alert";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.success), {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += " hard--bottom\">\n	";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.message), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n	";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.errors), {hash:{},inverse:self.noop,fn:self.program(7, program7, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n</div>\n";
-  return buffer;
-  });
+  return "<div class=\"form-alert"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.success : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.program(3, data, 0),"data":data})) != null ? stack1 : "")
+    + "\">\n  "
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.message : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.errors : depth0),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</div>\n";
+},"useData":true});
 
-return this["JST"];
+return this["Templates"]["Default"]["Form"];
 
-});
+}));
