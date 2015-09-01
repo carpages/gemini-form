@@ -150,20 +150,26 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
       $.each(plugin.settings.customTests, function(key, value) {
         $(key).each(function () {
+          var $el = $(this);
+          $el.data('usesCustomTest', true);
+
           plugin.requirements.push({
             el: this,
-            $el: $(this),
+            $el: $el,
             test: value
           });
         });
       });
 
       plugin.$el.find('[required]').each(function () {
-        plugin.requirements.push({
-          el: this,
-          $el: $(this),
-          test: null
-        });
+        var $el = $(this);
+
+        if (!$el.data('usesCustomTest'))
+          plugin.requirements.push({
+            el: this,
+            $el: $(this),
+            test: null
+          });
       });
 
       // user has set custom alert target
