@@ -17,7 +17,9 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
  *
  * @prop {function} onSubmit {@link gemini.form#onSubmit}
  * @prop {function} onResponse {@link gemini.form#onResponse}
- * @prop {string} alertTarget {@link gemini.form#alertTarget}
+ * @prop {string} formAlertTarget {@link gemini.form#formAlertTarget}
+ * @prop {object} customTests {@link gemini.form#customTests}
+ * @prop {function} defaultTest {@link gemini.form#defaultTest}
  * @prop {object} templates {@link gemini.form#templates}
  *
  * @example
@@ -95,13 +97,34 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
       /**
        * Selector of container for the alert message
        *
-       * *Note:* By default, it prepends it to the form
+       * *Note:* By default, it asserts it before the submit buttons
        *
-       * @name gemini.form#alertTarget
+       * @name gemini.form#formAlertTarget
        * @type string
        * @default false
        */
-      alertTarget: false,
+      formAlertTarget: false,
+      /**
+       * Map of selectors pointing to functions for writing custom tests. These
+       * functions can either return boolean for pass or fail, or a data object
+       * that will be passed to the alert function.
+       *
+       * @name gemini.form#customTests
+       * @type object
+       * @default {}
+       */
+      customTests: {},
+      /**
+       * The default test that runs for input objects. It can return either a
+       * boolean, or an object to be passed to the alert template
+       *
+       * @name gemini.form#defaultTest
+       * @type function
+       * @default return !!$(this).val();
+       */
+      defaultTest: function() {
+        return !!$(this).val();
+      },
       /**
        * Precompiled Handlebar templates to replace default.
        * Expecting 'alert' for the alert message.
@@ -113,22 +136,46 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
       templates: {}
     },
 
-    events: {
-      submit: '_onSubmit'
-    },
-
     init: function(){
       var plugin = this;
 
-      //Extend the templates
+      // extend the templates
       plugin.T = $.extend(T, plugin.settings.templates);
 
-      if(plugin.settings.alertTarget){
-        plugin.$alert = plugin.$el.find(plugin.settings.alertTarget).hide();
-      } else {
-        plugin.$alert = $('<div/>').hide();
-        plugin.$el.prepend(plugin.$alert);
+      // cache
+      plugin.$submit = plugin.$el.find('[type="submit"]');
+
+      // cache requirements and their tests
+      plugin.requirements = [];
+
+      $.each(plugin.settings.customTests, function(key, value) {
+        $(key).each(function () {
+          plugin.requirements.push({
+            el: this,
+            $el: $(this),
+            test: value
+          });
+        });
+      });
+
+      plugin.$el.find('[required]').each(function () {
+        plugin.requirements.push({
+          el: this,
+          $el: $(this),
+          test: null
+        });
+      });
+
+      // user has set custom alert target
+      if (plugin.settings.formAlertTarget) {
+        plugin.$el.data('form-alert', plugin.$el.find(plugin.settings.formAlertTarget).hide());
       }
+
+      // use button click to byPass default submit
+      plugin.$submit.click(function(e) {
+        e.preventDefault();
+        plugin._onSubmit();
+      });
     },
 
     /**
@@ -139,52 +186,157 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
      * @name gemini.form#_onSubmit
      * @param {object} e Event object
     **/
-    _onSubmit: function(e){
-      e.preventDefault();
-
+    _onSubmit: function(){
       var plugin = this;
 
-      if(plugin.settings.onSubmit) plugin.settings.onSubmit.call(plugin);
-      plugin.$el.find('[type="submit"]').prop('disabled', true);
+      if (plugin.settings.onSubmit) plugin.settings.onSubmit.call(plugin);
 
-      $.ajax({
-        url: plugin.$el.attr('action'),
-        data: plugin.$el.serialize(),
-        type: 'POST',
-        dataType: 'json',
-        error: function(){
-          plugin.alert({
-            message: 'Sorry, there seems to be an error. Please try again.'
-          });
-        },
-        success: function(response){
-          // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
+      // meets requirements
+      if ( plugin._checkRequirements() ) {
 
-          if(response.status == "success"){
-            // used when call is successful
-            plugin.alert({
-              success: true,
-              message: 'Your message was successfully sent.'
-            });
-            plugin.el.reset();
-          }else if(response.status == "fail"){
-            // used when call is rejected due to invalid data or call conditions
-            plugin.alert({
-              message: 'Please correct the following:',
-              errors: response.data
-            });
-          }else if(response.status == "error"){
-            // used when call fails due to an error on the server
-            plugin.alert({
-              message: response.message
-            });
+        plugin.$submit.prop('disabled', true);
+
+        $.ajax({
+          url: plugin.$el.attr('action'),
+          data: plugin.$el.serialize(),
+          type: 'POST',
+          dataType: 'json',
+          error: function() {
+            plugin._handleResponse( {status: null} );
+          },
+          success: function(response) {
+            plugin._handleResponse(response);
+          },
+          complete: function() {
+            if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
+            plugin.$submit.prop('disabled', false);
           }
-        },
-        complete: function(){
-          if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
-          plugin.$el.find('[type="submit"]').prop('disabled', false);
+        });
+
+      }
+    },
+
+    /**
+     * Check if the form requirements pass
+     *
+     * @private
+     * @method
+     * @name gemini.form#_checkRequirements
+     * @return {boolean} Weather the requirements pass or not
+    **/
+    _checkRequirements: function() {
+      var plugin = this;
+      var pass = true;
+
+      $.each(plugin.requirements, function(i, requirement) {
+        var thisPasses = plugin._checkInput(requirement.el, requirement.test);
+
+        if ( !thisPasses ) {
+
+          // Add change listener if failed
+          requirement.$el.change(function() {
+            plugin._checkInput(requirement.el, requirement.test);
+          });
         }
+
+        pass = pass && thisPasses;
+
       });
+
+      return pass;
+
+    },
+
+    /**
+     * Check if a specific input has a value and append alert if it doesn't
+     *
+     * @private
+     * @method
+     * @name gemini.form#_checkInput
+     * @param {object} el The element that you're checking
+     * @return {boolean} Weather the input has a value or not
+    **/
+    _checkInput: function(el, test) {
+      var plugin = this;
+      var $el = $(el);
+
+      // Default test
+      if(typeof test === 'undefined' || !test) {
+        var test = plugin.settings.defaultTest;
+      }
+
+      var results = test.call(el);
+
+      // If results is false, or object
+      if (!results || typeof results === 'object') {
+
+        // Create alert using results object with fallback
+        plugin.alert(results || {
+          message: "This field is required"
+        }, el);
+
+        // Set status
+        $el.addClass('is-error');
+
+        return false;
+
+      } else {
+
+        // Remove alert
+        plugin.alert(false, el);
+
+        // Remove status
+        $el.removeClass('is-error');
+
+        return true;
+
+      }
+    },
+
+    /**
+     * Handles the response from the server when the form is sent
+     *
+     * @private
+     * @method
+     * @name gemini.form#_handleResponse
+     * @param {object} response The ajax object returned from the server
+    **/
+    _handleResponse: function(response) {
+      var plugin = this;
+
+      // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
+      switch (response.status) {
+
+        // when call is successful
+        case "success":
+          plugin.alert({
+            success: true,
+            message: 'Your message was successfully sent.'
+          });
+          plugin.el.reset();
+          break;
+
+        // when call is rejected due to invalid data or call conditions
+        case "fail":
+          plugin.alert({
+            message: 'Please correct the following:',
+            errors: response.data
+          });
+          break;
+
+        // when call fails due to an error on the server
+        case "error":
+          plugin.alert({
+            message: response.message
+          });
+          break;
+
+        // when server doesn't pass right data
+        default:
+          plugin.alert({
+            message: "Something went wrong. Please try again later. Sorry for any inconvenience."
+          });
+      }
     },
 
     /**
@@ -194,11 +346,39 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
      * @name gemini.form#alert
      * @param {object} data The data to send to the alert template
     **/
-    alert: function(data){
+    alert: function(data, el){
       var plugin = this;
+      var isEl = typeof el !== 'undefined';
+      var isForm = !isEl;
 
-      plugin.$alert[0].innerHTML = plugin.T.alert(data);
-      plugin.$alert.show();
+      // default alert to form alert
+      var $el = isEl ? $(el) : plugin.$el;
+
+      // get alert object
+      var $alert = $el.data('form-alert');
+
+      // cache alert if it doesn't exist yet
+      if (!$alert) {
+        $alert = $('<div>');
+        $el.data('form-alert', $alert);
+
+        // prepend button for form // append for input
+        if (isForm) {
+          plugin.$submit.before($alert);
+        } else {
+          $el.after($alert);
+        }
+      }
+
+      // show alert if successful
+      if (!!data) {
+        data.module = isForm ? "form-alert" : "input-alert";
+
+        $alert.html( plugin.T.alert(data) )
+              .show();
+      } else {
+        $alert.hide();
+      }
     }
   });
 

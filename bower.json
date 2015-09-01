@@ -1,7 +1,10 @@
 {
   "name": "gemini-form",
   "authors": [
-    {"name": "Matt Rose", "email": "matt@mattrose.ca"}
+    {
+      "name": "Matt Rose",
+      "email": "matt@mattrose.ca"
+    }
   ],
   "main": [
     "gemini.form.js",
@@ -18,6 +21,10 @@
   "devDependencies": {
     "requirejs": "~2.1.11",
     "qunit": "~1.18.0",
-    "gemini-css": "~1"
+    "gemini-css": "~1",
+    "jquery-mockjax": "~2.0.1"
+  },
+  "resolutions": {
+    "jquery": "1.11.x"
   }
 }
