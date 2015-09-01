@@ -268,7 +268,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
       // Default test
       if(typeof test === 'undefined' || !test) {
-        var test = plugin.settings.defaultTest;
+        test = plugin.settings.defaultTest;
       }
 
       var results = test.call(el);
