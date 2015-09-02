@@ -15,3 +15,7 @@
 ## v2.0.1
 
     - Fix gemini module namespace for AMD
+
+## v2.1.0
+
+    - Add ability to target where inputs render their alerts using `data-form-alert`
