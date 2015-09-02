@@ -7,6 +7,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 ### Notes
 - Alerted results are generated using an [alert template](https://github.com/carpages/gemini-form/blob/master/templates/alert.hbs)
 - The form's action is used to make the ajax request
+- You can specify where the result is targeted per input using `data-form-alert`
 
  *
  * @namespace gemini.form
@@ -174,7 +175,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
       // user has set custom alert target
       if (plugin.settings.formAlertTarget) {
-        plugin.$el.data('form-alert', plugin.$el.find(plugin.settings.formAlertTarget).hide());
+        plugin.$el.data('form-alert-cache', plugin.$el.find(plugin.settings.formAlertTarget).hide());
       }
 
       // use button click to byPass default submit
@@ -268,7 +269,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
       // Default test
       if(typeof test === 'undefined' || !test) {
-        test = plugin.settings.defaultTest;
+        var test = plugin.settings.defaultTest;
       }
 
       var results = test.call(el);
@@ -361,19 +362,27 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
       var $el = isEl ? $(el) : plugin.$el;
 
       // get alert object
-      var $alert = $el.data('form-alert');
+      var $alert = $el.data('form-alert-cache');
 
       // cache alert if it doesn't exist yet
       if (!$alert) {
-        $alert = $('<div>');
-        $el.data('form-alert', $alert);
+        var id = $el.data('form-alert');
 
-        // prepend button for form // append for input
-        if (isForm) {
-          plugin.$submit.before($alert);
+        // grab set id, or generate new div
+        if (!!id) {
+          $alert = plugin.$el.find(id);
         } else {
-          $el.after($alert);
+          $alert = $('<div>');
+
+          // prepend button for form // append for input
+          if (isForm) {
+            plugin.$submit.before($alert);
+          } else {
+            $el.after($alert);
+          }
         }
+
+        $el.data('form-alert-cache', $alert);
       }
 
       // show alert if successful
