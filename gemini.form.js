@@ -1,10 +1,11 @@
 /**
  * @fileoverview
 
-A Gemini plugin that submits forms using ajax, and returns results based on the
-[JSend standard](http://labs.omniti.com/labs/jsend).
+A Gemini plugin that can validate forms on the front-end as well as submit them
+using ajax.
 
 ### Notes
+- The plugin follows the [JSend standard](http://labs.omniti.com/labs/jsend).
 - Alerted results are generated using an [alert template](https://github.com/carpages/gemini-form/blob/master/templates/alert.hbs)
 - The form's action is used to make the ajax request
 - You can specify where the result is targeted per input using `data-form-alert`
