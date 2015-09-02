@@ -67,7 +67,7 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
   } else if (typeof exports === 'object') {
     // Node/CommonJS
     module.exports = factory(
-      require('gemini'),
+      require('gemini-loader'),
       require('./templates.js')
     );
   } else {

@@ -11,3 +11,7 @@
     - Form alert is now shown above the submit button by default
     - Added tests to individual inputs using HTML5 `required` attribute
     - Added ability to add custom tests
+
+## v2.0.1
+
+    - Fix gemini module namespace for AMD
