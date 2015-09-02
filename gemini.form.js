@@ -131,6 +131,21 @@ using ajax.
         "input":     "alert-input",
         "form":      "alert-form"
       },
+      /**
+       * The event associated with a node type. This event is bound on errors.
+       *
+       * @name gemini.form#eventTypes
+       * @type object
+       * @default {
+       *   "default":   "change",
+       *   "input":     "keyup"
+       * }
+       */
+      eventTypes: {
+        "default":   "change",
+        "input":     "keyup"
+      },
+      /**
        * Map of selectors pointing to functions for writing custom tests. These
        * functions can either return boolean for pass or fail, or a data object
        * that will be passed to the alert function.
@@ -179,10 +194,14 @@ using ajax.
           var $el = $(this);
           $el.data('usesCustomTest', true);
 
+          var eventType = plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
+                          plugin.settings.eventTypes["default"];
+
           plugin.requirements.push({
             el: this,
             $el: $el,
-            test: value
+            test: value,
+            eventName: eventType + ".geminiform"
           });
         });
       });
@@ -190,11 +209,15 @@ using ajax.
       plugin.$el.find('[required]').each(function () {
         var $el = $(this);
 
+        var eventType = plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
+                        plugin.settings.eventTypes["default"];
+
         if (!$el.data('usesCustomTest'))
           plugin.requirements.push({
             el: this,
             $el: $(this),
-            test: null
+            test: null,
+            eventName: eventType + ".geminiform"
           });
       });
 
@@ -273,8 +296,10 @@ using ajax.
         if ( !thisPasses ) {
 
           // Add change listener if failed
-          requirement.$el.change(function() {
-            plugin._checkInput(requirement.el, requirement.test);
+          requirement.$el.on(requirement.eventName, function() {
+            var secondPass = plugin._checkInput(requirement.el, requirement.test);
+            if (secondPass)
+              requirement.$el.off(requirement.eventName);
           });
         }
 
