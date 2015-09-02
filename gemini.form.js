@@ -80,6 +80,14 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
   $.boiler('form', {
     defaults: {
       /**
+       * Weather to send ajax request
+       *
+       * @name gemini.form#ajax
+       * @type boolean
+       * @default true
+       */
+      ajax: true,
+      /**
        * Callback function after the user has submitted the form
        *
        * @name gemini.form#onSubmit
@@ -217,24 +225,31 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
       // meets requirements
       if ( plugin._checkRequirements() ) {
 
-        plugin.$submit.prop('disabled', true);
+        // Use ajax
+        if ( plugin.settings.ajax ) {
+          plugin.$submit.prop('disabled', true);
 
-        $.ajax({
-          url: plugin.$el.attr('action'),
-          data: plugin.$el.serialize(),
-          type: 'POST',
-          dataType: 'json',
-          error: function() {
-            plugin._handleResponse( {status: null} );
-          },
-          success: function(response) {
-            plugin._handleResponse(response);
-          },
-          complete: function() {
-            if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
-            plugin.$submit.prop('disabled', false);
-          }
-        });
+          $.ajax({
+            url: plugin.$el.attr('action'),
+            data: plugin.$el.serialize(),
+            type: 'POST',
+            dataType: 'json',
+            error: function() {
+              plugin._handleResponse( {status: null} );
+            },
+            success: function(response) {
+              plugin._handleResponse(response);
+            },
+            complete: function() {
+              if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
+              plugin.$submit.prop('disabled', false);
+            }
+          });
+
+        // Don't use ajax
+        } else {
+          plugin.$el.submit();
+        }
 
       }
     },
