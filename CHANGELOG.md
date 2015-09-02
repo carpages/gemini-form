@@ -19,3 +19,10 @@
 ## v2.1.0
 
     - Add ability to target where inputs render their alerts using `data-form-alert`
+
+## v2.2.0
+
+    - Add option for ajax to be optional
+    - Add option for custom event types
+    - Add option for custom module names
+    - Add unique identifier class `gemini-form-alert` to default template
