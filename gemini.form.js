@@ -106,6 +106,22 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
        */
       formAlertTarget: false,
       /**
+       * The CSS module names associated with a node type. This module
+       * is passed to the template
+       *
+       * @name gemini.form#moduleNames
+       * @type object
+       * @default {
+       *   "default":   "alert",
+       *   "input":     "alert-input",
+       *   "form":      "alert-form"
+       * }
+       */
+      moduleNames: {
+        "default":   "alert",
+        "input":     "alert-input",
+        "form":      "alert-form"
+      },
        * Map of selectors pointing to functions for writing custom tests. These
        * functions can either return boolean for pass or fail, or a data object
        * that will be passed to the alert function.
@@ -359,7 +375,13 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
       var isForm = !isEl;
 
       // default alert to form alert
-      var $el = isEl ? $(el) : plugin.$el;
+      var $el;
+      if ( isEl ) {
+        $el = $(el);
+      } else {
+        $el = plugin.$el;
+        el = plugin.$el[0];
+      }
 
       // get alert object
       var $alert = $el.data('form-alert-cache');
@@ -387,7 +409,8 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
 
       // show alert if successful
       if (!!data) {
-        data.module = isForm ? "form-alert" : "input-alert";
+        data.module = plugin.settings.moduleNames[el.nodeName.toLowerCase()] ||
+                      plugin.settings.moduleNames["default"];
 
         $alert.html( plugin.T.alert(data) )
               .show();
