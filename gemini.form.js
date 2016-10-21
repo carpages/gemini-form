@@ -59,26 +59,25 @@ using ajax.
   G('#js-ajax-form').form();
  */
 
-(function(factory) {
-  if (typeof define === 'function' && define.amd) {
+( function( factory ) {
+  if ( typeof define === 'function' && define.amd ) {
     // AMD. Register as an anonymous module.
     define([
       'gemini',
       'gemini.form.templates'
-    ], factory);
-  } else if (typeof exports === 'object') {
+    ], factory );
+  } else if ( typeof exports === 'object' ) {
     // Node/CommonJS
     module.exports = factory(
-      require('gemini-loader'),
-      require('./templates.js')
+      require( 'gemini-loader' ),
+      require( './templates.js' )
     );
   } else {
     // Browser globals
-    factory(G, Templates.Default.Form);
+    factory( G, Templates.Default.Form );
   }
-}(function($, T) {
-
-  $.boiler('form', {
+}( function( $, T ) {
+  $.boiler( 'form', {
     defaults: {
       /**
        * Weather to send ajax request
@@ -88,6 +87,7 @@ using ajax.
        * @default true
        */
       ajax: true,
+
       /**
        * Callback function after the user has submitted the form
        *
@@ -96,6 +96,7 @@ using ajax.
        * @default false
        */
       onSubmit: false,
+
       /**
        * Callback function after the server has returned a response
        *
@@ -104,6 +105,7 @@ using ajax.
        * @default false
        */
       onResponse: false,
+
       /**
        * Selector of container for the alert message
        *
@@ -114,6 +116,7 @@ using ajax.
        * @default false
        */
       formAlertTarget: false,
+
       /**
        * The CSS module names associated with a node type. This module
        * is passed to the template
@@ -127,10 +130,11 @@ using ajax.
        * }
        */
       moduleNames: {
-        "default":   "alert",
-        "input":     "alert-input",
-        "form":      "alert-form"
+        'default': 'alert',
+        'input':   'alert-input',
+        'form':    'alert-form'
       },
+
       /**
        * The event associated with a node type. This event is bound on errors.
        *
@@ -142,9 +146,10 @@ using ajax.
        * }
        */
       eventTypes: {
-        "default":   "change",
-        "input":     "keyup"
+        'default': 'change',
+        'input':   'keyup'
       },
+
       /**
        * Map of selectors pointing to functions for writing custom tests. These
        * functions can either return boolean for pass or fail, or a data object
@@ -155,6 +160,7 @@ using ajax.
        * @default {}
        */
       customTests: {},
+
       /**
        * The default test that runs for input objects. It can return either a
        * boolean, or an object to be passed to the alert template
@@ -164,8 +170,9 @@ using ajax.
        * @default return !!$(this).val();
        */
       defaultTest: function() {
-        return !!$(this).val();
+        return !!$( this ).val();
       },
+
       /**
        * Precompiled Handlebar templates to replace default.
        * Expecting 'alert' for the alert message.
@@ -177,57 +184,58 @@ using ajax.
       templates: {}
     },
 
-    init: function(){
+    init: function() {
       var plugin = this;
 
       // extend the templates
-      plugin.T = $.extend(T, plugin.settings.templates);
+      plugin.T = $.extend( T, plugin.settings.templates );
 
       // cache
-      plugin.$submit = plugin.$el.find('[type="submit"]');
+      plugin.$submit = plugin.$el.find( '[type="submit"]' );
 
       // cache requirements and their tests
       plugin.requirements = [];
 
-      $.each(plugin.settings.customTests, function(key, value) {
-        $(key).each(function () {
-          var $el = $(this);
-          $el.data('usesCustomTest', true);
+      $.each( plugin.settings.customTests, function( key, value ) {
+        $( key ).each( function() {
+          var $el = $( this );
+          $el.data( 'usesCustomTest', true );
 
           var eventType = plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
-                          plugin.settings.eventTypes["default"];
+                          plugin.settings.eventTypes['default'];
 
           plugin.requirements.push({
-            el: this,
-            $el: $el,
-            test: value,
-            eventName: eventType + ".geminiform"
+            el:        this,
+            $el:       $el,
+            test:      value,
+            eventName: eventType + '.geminiform'
           });
         });
       });
 
-      plugin.$el.find('[required]').each(function () {
-        var $el = $(this);
+      plugin.$el.find( '[required]' ).each( function() {
+        var $el = $( this );
 
         var eventType = plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
-                        plugin.settings.eventTypes["default"];
+                        plugin.settings.eventTypes['default'];
 
-        if (!$el.data('usesCustomTest'))
+        if ( !$el.data( 'usesCustomTest' )) {
           plugin.requirements.push({
-            el: this,
-            $el: $(this),
-            test: null,
-            eventName: eventType + ".geminiform"
+            el:        this,
+            $el:       $( this ),
+            test:      null,
+            eventName: eventType + '.geminiform'
           });
+        }
       });
 
       // user has set custom alert target
-      if (plugin.settings.formAlertTarget) {
-        plugin.$el.data('form-alert-cache', plugin.$el.find(plugin.settings.formAlertTarget).hide());
+      if ( plugin.settings.formAlertTarget ) {
+        plugin.$el.data( 'form-alert-cache', plugin.$el.find( plugin.settings.formAlertTarget ).hide());
       }
 
       // use button click to byPass default submit
-      plugin.$submit.click(function(e) {
+      plugin.$submit.click( function( e ) {
         e.preventDefault();
         plugin._onSubmit();
       });
@@ -241,32 +249,31 @@ using ajax.
      * @name gemini.form#_onSubmit
      * @param {object} e Event object
     **/
-    _onSubmit: function(){
+    _onSubmit: function() {
       var plugin = this;
 
-      if (plugin.settings.onSubmit) plugin.settings.onSubmit.call(plugin);
+      if ( plugin.settings.onSubmit ) plugin.settings.onSubmit.call( plugin );
 
       // meets requirements
-      if ( plugin._checkRequirements() ) {
-
+      if ( plugin._checkRequirements()) {
         // Use ajax
         if ( plugin.settings.ajax ) {
-          plugin.$submit.prop('disabled', true);
+          plugin.$submit.prop( 'disabled', true );
 
           $.ajax({
-            url: plugin.$el.attr('action'),
-            data: plugin.$el.serialize(),
-            type: 'POST',
+            url:      plugin.$el.attr( 'action' ),
+            data:     plugin.$el.serialize(),
+            type:     'POST',
             dataType: 'json',
-            error: function() {
-              plugin._handleResponse( {status: null} );
+            error:    function() {
+              plugin._handleResponse({ status: null });
             },
-            success: function(response) {
-              plugin._handleResponse(response);
+            success: function( response ) {
+              plugin._handleResponse( response );
             },
             complete: function() {
-              if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
-              plugin.$submit.prop('disabled', false);
+              if ( plugin.settings.onResponse ) plugin.settings.onResponse.call( plugin );
+              plugin.$submit.prop( 'disabled', false );
             }
           });
 
@@ -274,7 +281,6 @@ using ajax.
         } else {
           plugin.$el.submit();
         }
-
       }
     },
 
@@ -290,25 +296,24 @@ using ajax.
       var plugin = this;
       var pass = true;
 
-      $.each(plugin.requirements, function(i, requirement) {
-        var thisPasses = plugin._checkInput(requirement.el, requirement.test);
+      $.each( plugin.requirements, function( i, requirement ) {
+        var thisPasses = plugin._checkInput( requirement.el, requirement.test );
 
         if ( !thisPasses ) {
-
           // Add change listener if failed
-          requirement.$el.on(requirement.eventName, function() {
-            var secondPass = plugin._checkInput(requirement.el, requirement.test);
-            if (secondPass)
-              requirement.$el.off(requirement.eventName);
+          requirement.$el.on( requirement.eventName, function() {
+            var secondPass = plugin._checkInput( requirement.el, requirement.test );
+
+            if ( secondPass ) {
+              requirement.$el.off( requirement.eventName );
+            }
           });
         }
 
         pass = pass && thisPasses;
-
       });
 
       return pass;
-
     },
 
     /**
@@ -320,40 +325,36 @@ using ajax.
      * @param {object} el The element that you're checking
      * @return {boolean} Weather the input has a value or not
     **/
-    _checkInput: function(el, test) {
+    _checkInput: function( el, test ) {
       var plugin = this;
-      var $el = $(el);
+      var $el = $( el );
 
       // Default test
-      if(typeof test === 'undefined' || !test) {
+      if ( typeof test === 'undefined' || !test ) {
         test = plugin.settings.defaultTest;
       }
 
-      var results = test.call(el);
+      var results = test.call( el );
 
       // If results is false, or object
-      if (!results || typeof results === 'object') {
-
+      if ( !results || typeof results === 'object' ) {
         // Create alert using results object with fallback
-        plugin.alert(results || {
-          message: "This field is required"
-        }, el);
+        plugin.alert( results || {
+          message: 'This field is required'
+        }, el );
 
         // Set status
-        $el.addClass('is-error');
+        $el.addClass( 'is-error' );
 
         return false;
-
       } else {
-
         // Remove alert
-        plugin.alert(false, el);
+        plugin.alert( false, el );
 
         // Remove status
-        $el.removeClass('is-error');
+        $el.removeClass( 'is-error' );
 
         return true;
-
       }
     },
 
@@ -365,14 +366,14 @@ using ajax.
      * @name gemini.form#_handleResponse
      * @param {object} response The ajax object returned from the server
     **/
-    _handleResponse: function(response) {
+    _handleResponse: function( response ) {
       var plugin = this;
 
       // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
-      switch (response.status) {
+      switch ( response.status ) {
 
         // when call is successful
-        case "success":
+        case 'success':
           plugin.alert({
             success: true,
             message: 'Your message was successfully sent.'
@@ -381,15 +382,15 @@ using ajax.
           break;
 
         // when call is rejected due to invalid data or call conditions
-        case "fail":
+        case 'fail':
           plugin.alert({
             message: 'Please correct the following:',
-            errors: response.data
+            errors:  response.data
           });
           break;
 
         // when call fails due to an error on the server
-        case "error":
+        case 'error':
           plugin.alert({
             message: response.message
           });
@@ -398,7 +399,7 @@ using ajax.
         // when server doesn't pass right data
         default:
           plugin.alert({
-            message: "Something went wrong. Please try again later. Sorry for any inconvenience."
+            message: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
           });
       }
     },
@@ -410,50 +411,51 @@ using ajax.
      * @name gemini.form#alert
      * @param {object} data The data to send to the alert template
     **/
-    alert: function(data, el){
+    alert: function( data, el ) {
       var plugin = this;
       var isEl = typeof el !== 'undefined';
       var isForm = !isEl;
 
       // default alert to form alert
       var $el;
+
       if ( isEl ) {
-        $el = $(el);
+        $el = $( el );
       } else {
         $el = plugin.$el;
         el = plugin.$el[0];
       }
 
       // get alert object
-      var $alert = $el.data('form-alert-cache');
+      var $alert = $el.data( 'form-alert-cache' );
 
       // cache alert if it doesn't exist yet
-      if (!$alert) {
-        var id = $el.data('form-alert');
+      if ( !$alert ) {
+        var id = $el.data( 'form-alert' );
 
         // grab set id, or generate new div
-        if (!!id) {
-          $alert = plugin.$el.find(id);
+        if ( !!id ) {
+          $alert = plugin.$el.find( id );
         } else {
-          $alert = $('<div>');
+          $alert = $( '<div>' );
 
           // prepend button for form // append for input
-          if (isForm) {
-            plugin.$submit.before($alert);
+          if ( isForm ) {
+            plugin.$submit.before( $alert );
           } else {
-            $el.after($alert);
+            $el.after( $alert );
           }
         }
 
-        $el.data('form-alert-cache', $alert);
+        $el.data( 'form-alert-cache', $alert );
       }
 
       // show alert if successful
-      if (!!data) {
+      if ( !!data ) {
         data.module = plugin.settings.moduleNames[el.nodeName.toLowerCase()] ||
-                      plugin.settings.moduleNames["default"];
+                      plugin.settings.moduleNames['default'];
 
-        $alert.html( plugin.T.alert(data) )
+        $alert.html( plugin.T.alert( data ))
               .show();
       } else {
         $alert.hide();
@@ -464,5 +466,4 @@ using ajax.
   // Return the jquery object
   // This way you don't need to require both jquery and the plugin
   return $;
-
 }));
