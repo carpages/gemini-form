@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.2.2
+
+  - Fix linting grunt task
+
 ## v2.2.1
 
   - Remove jshint in favour of eslint with custom ruleset
