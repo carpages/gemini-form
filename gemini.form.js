@@ -1,3 +1,4 @@
+/* global Templates */
 /**
  * @fileoverview
 
@@ -434,7 +435,7 @@ using ajax.
         var id = $el.data( 'form-alert' );
 
         // grab set id, or generate new div
-        if ( !!id ) {
+        if ( id ) {
           $alert = plugin.$el.find( id );
         } else {
           $alert = $( '<div>' );
@@ -451,7 +452,7 @@ using ajax.
       }
 
       // show alert if successful
-      if ( !!data ) {
+      if ( data ) {
         data.module = plugin.settings.moduleNames[el.nodeName.toLowerCase()] ||
                       plugin.settings.moduleNames['default'];
 
