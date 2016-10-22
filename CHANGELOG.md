@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.2.3
+
+  - Fix linting errors
+
 ## v2.2.2
 
   - Fix linting grunt task
