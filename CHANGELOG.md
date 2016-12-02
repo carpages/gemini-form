@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.4.1
+
+  - Change generic parent selector to closest custom error container parent
+
 ## v2.4.0
 
   - Add option for a custom alert target container
