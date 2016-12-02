@@ -27,6 +27,7 @@ require([
   });
 
   G( '#js-ajax-form' ).form({
-    inputAlertTarget: '.field__errors'
+    inputAlertTarget: '.field__errors',
+    inputAlertParent: '.field'
   });
 });

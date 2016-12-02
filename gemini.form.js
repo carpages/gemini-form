@@ -130,6 +130,15 @@ using ajax.
       inputAlertTarget: false,
 
       /**
+       * Selector of parent for the input alert container
+       *
+       * @name gemini.form#inputAlertParent
+       * @type string
+       * @default ''
+       */
+      inputAlertParent: '',
+
+      /**
        * The CSS module names associated with a node type. This module
        * is passed to the template
        *
@@ -457,7 +466,7 @@ using ajax.
       if ( plugin.settings.formAlertTarget ) {
         $alert = $el.data( 'form-alert-cache' );
       } else if ( plugin.settings.inputAlertTarget ) {
-        $alert = $el.parent().find( plugin.settings.inputAlertTarget );
+        $alert = $el.closest( plugin.settings.inputAlertParent ).find( plugin.settings.inputAlertTarget );
       }
 
       // cache alert if it doesn't exist yet
