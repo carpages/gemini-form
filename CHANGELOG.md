@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.4.0
+
+  - Add option for a custom alert target container
+
 ## v2.3.0
 
   - Add option for custom error CSS class
