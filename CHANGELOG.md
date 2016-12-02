@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.3.0
+
+  - Add option for custom error CSS class
+
 ## v2.2.3
 
   - Fix linting errors
