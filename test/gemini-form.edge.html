@@ -14,6 +14,7 @@
     <div>
          <label for="name">Name:</label>
          <input type="text" name="name" id="name" value="" tabindex="1" required/>
+         <div class="field__errors"></div>
     </div>
 
     <div>
@@ -24,16 +25,19 @@
         <option value="Choice 2">Choice 2</option>
         <option value="Choice 3">Choice 3</option>
       </select>
+      <div class="field__errors"></div>
     </div>
 
     <div>
       <label for="textarea">Textarea:</label>
       <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
+      <div class="field__errors"></div>
     </div>
 
     <label>
-      <input type="checkbox" name="checkbox" id="checkbox" />
+      <input type="checkbox" name="checkbox" id="checkbox"/>
       Checkbox
+      <div class="field__errors"></div>
     </label>
 
     <input class="button" type="submit" value="Submit" />

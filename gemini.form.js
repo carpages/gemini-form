@@ -108,7 +108,7 @@ using ajax.
       onResponse: false,
 
       /**
-       * Selector of container for the alert message
+       * Selector of container for the form alert message
        *
        * *Note:* By default, it asserts it before the submit buttons
        *
@@ -117,6 +117,17 @@ using ajax.
        * @default false
        */
       formAlertTarget: false,
+
+      /**
+       * Selector of container for the input alert message
+       *
+       * *Note:* By default, it asserts it after the input itself
+       *
+       * @name gemini.form#inputAlertTarget
+       * @type string
+       * @default false
+       */
+      inputAlertTarget: false,
 
       /**
        * The CSS module names associated with a node type. This module
@@ -239,9 +250,14 @@ using ajax.
         }
       });
 
-      // user has set custom alert target
+      // user has set custom form alert target
       if ( plugin.settings.formAlertTarget ) {
         plugin.$el.data( 'form-alert-cache', plugin.$el.find( plugin.settings.formAlertTarget ).hide());
+      }
+
+      // user has set custom input alert target
+      if ( plugin.settings.inputAlertTarget ) {
+        plugin.$el.find( plugin.settings.inputAlertTarget ).hide();
       }
 
       // use button click to byPass default submit
@@ -436,8 +452,13 @@ using ajax.
         el = plugin.$el[0];
       }
 
+      var $alert;
       // get alert object
-      var $alert = $el.data( 'form-alert-cache' );
+      if ( plugin.settings.formAlertTarget ) {
+        $alert = $el.data( 'form-alert-cache' );
+      } else if ( plugin.settings.inputAlertTarget ) {
+        $alert = $el.parent().find( plugin.settings.inputAlertTarget );
+      }
 
       // cache alert if it doesn't exist yet
       if ( !$alert ) {
@@ -449,10 +470,14 @@ using ajax.
         } else {
           $alert = $( '<div>' );
 
-          // prepend button for form // append for input
-          if ( isForm ) {
+          if ( plugin.settings.inputAlertTarget ) {
+            // insert into input alert target when set
+            $el.append( $alert );
+          } else if ( isForm ) {
+            // prepend button for form
             plugin.$submit.before( $alert );
           } else {
+            // append for input
             $el.after( $alert );
           }
         }

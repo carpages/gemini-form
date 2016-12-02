@@ -26,5 +26,7 @@ require([
     }
   });
 
-  G( '#js-ajax-form' ).form();
+  G( '#js-ajax-form' ).form({
+    inputAlertTarget: '.field__errors'
+  });
 });
