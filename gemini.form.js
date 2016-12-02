@@ -137,6 +137,15 @@ using ajax.
       },
 
       /**
+       * The CSS class to be added to the input that has an error.
+       *
+       * @name gemini.form#errorClass
+       * @type string
+       * @default 'is-error'
+       */
+      errorClass: 'is-error',
+
+      /**
        * The event associated with a node type. This event is bound on errors.
        *
        * @name gemini.form#eventTypes
@@ -345,7 +354,7 @@ using ajax.
         }, el );
 
         // Set status
-        $el.addClass( 'is-error' );
+        $el.addClass( plugin.settings.errorClass );
 
         return false;
       } else {
@@ -353,7 +362,7 @@ using ajax.
         plugin.alert( false, el );
 
         // Remove status
-        $el.removeClass( 'is-error' );
+        $el.removeClass( plugin.settings.errorClass );
 
         return true;
       }
