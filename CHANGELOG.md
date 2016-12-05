@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.5.0
+
+  - Add option for a select wrapping div to get the error message
+
 ## v2.4.1
 
   - Change generic parent selector to closest custom error container parent
