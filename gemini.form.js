@@ -166,6 +166,24 @@ using ajax.
       errorClass: 'is-error',
 
       /**
+       * Whether or not select dropdowns are wrapped with a styling div
+       *
+       * @name gemini.form#selectWrapper
+       * @type boolean
+       * @default false
+       */
+      selectWrapper: false,
+
+      /**
+       * The class of the select wrapping div
+       *
+       * @name gemini.form#selectWrapperClass
+       * @type string
+       * @default '.select'
+       */
+      selectWrapperClass: '.select',
+
+      /**
        * The event associated with a node type. This event is bound on errors.
        *
        * @name gemini.form#eventTypes
@@ -378,16 +396,24 @@ using ajax.
           message: 'This field is required'
         }, el );
 
-        // Set status
-        $el.addClass( plugin.settings.errorClass );
+        if ( $el.is( 'select' ) && plugin.settings.selectWrapper ) {
+          $el.parent( plugin.settings.selectWrapperClass ).addClass( plugin.settings.errorClass );
+        } else {
+          // Set status
+          $el.addClass( plugin.settings.errorClass );
+        }
 
         return false;
       } else {
         // Remove alert
         plugin.alert( false, el );
 
-        // Remove status
-        $el.removeClass( plugin.settings.errorClass );
+        if ( $el.is( 'select' ) && plugin.settings.selectWrapper ) {
+          $el.parent( plugin.settings.selectWrapperClass ).removeClass( plugin.settings.errorClass );
+        } else {
+          // Remove status
+          $el.removeClass( plugin.settings.errorClass );
+        }
 
         return true;
       }
