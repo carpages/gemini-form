@@ -152,8 +152,8 @@ using ajax.
        */
       moduleNames: {
         'default': 'alert',
-        'input':   'alert-input',
-        'form':    'alert-form'
+        'input': 'alert-input',
+        'form': 'alert-form'
       },
 
       /**
@@ -195,7 +195,7 @@ using ajax.
        */
       eventTypes: {
         'default': 'change',
-        'input':   'keyup'
+        'input': 'keyup'
       },
 
       /**
@@ -253,9 +253,9 @@ using ajax.
                           plugin.settings.eventTypes['default'];
 
           plugin.requirements.push({
-            el:        this,
-            $el:       $el,
-            test:      value,
+            el: this,
+            $el: $el,
+            test: value,
             eventName: eventType + '.geminiform'
           });
         });
@@ -269,9 +269,9 @@ using ajax.
 
         if ( !$el.data( 'usesCustomTest' )) {
           plugin.requirements.push({
-            el:        this,
-            $el:       $( this ),
-            test:      null,
+            el: this,
+            $el: $( this ),
+            test: null,
             eventName: eventType + '.geminiform'
           });
         }
@@ -314,11 +314,11 @@ using ajax.
           plugin.$submit.prop( 'disabled', true );
 
           $.ajax({
-            url:      plugin.$el.attr( 'action' ),
-            data:     plugin.$el.serialize(),
-            type:     'POST',
+            url: plugin.$el.attr( 'action' ),
+            data: plugin.$el.serialize(),
+            type: 'POST',
             dataType: 'json',
-            error:    function() {
+            error: function() {
               plugin._handleResponse({ status: null });
             },
             success: function( response ) {
@@ -446,7 +446,7 @@ using ajax.
         case 'fail':
           plugin.alert({
             message: 'Please correct the following:',
-            errors:  response.data
+            errors: response.data
           });
           break;
 
