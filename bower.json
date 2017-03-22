@@ -23,8 +23,5 @@
     "qunit": "~1.18.0",
     "gemini-css": "~1",
     "jquery-mockjax": "~2.0.1"
-  },
-  "resolutions": {
-    "jquery": "1.11.x"
   }
 }
