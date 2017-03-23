@@ -16,12 +16,12 @@
   ],
   "dependencies": {
     "gemini-loader": "~0",
-    "handlebars": "~3.0.3"
+    "handlebars": "~4"
   },
   "devDependencies": {
-    "requirejs": "~2.1.11",
-    "qunit": "~1.18.0",
+    "requirejs": "~2",
+    "qunit": "~2",
     "gemini-css": "~1",
-    "jquery-mockjax": "~2.0.1"
+    "jquery-mockjax": "~2"
   }
 }
