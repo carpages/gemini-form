@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.6.0
+
+  - Update Handlebars to v4
+
 ## v2.5.0
 
   - Add option for a select wrapping div to get the error message
