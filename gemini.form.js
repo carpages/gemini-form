@@ -102,6 +102,8 @@ using ajax.
        * Callback function after the server has returned a response
        *
        * @name gemini.form#onResponse
+       * @param {jqXHR} jqXHR The XHR object from the AJAX request.
+       * @param {string} textStatus The status of the AJAX response.
        * @type function
        * @default false
        */
@@ -324,8 +326,8 @@ using ajax.
             success: function( response ) {
               plugin._handleResponse( response );
             },
-            complete: function() {
-              if ( plugin.settings.onResponse ) plugin.settings.onResponse.call( plugin );
+            complete: function( jqXHR, textStatus ) {
+              if ( plugin.settings.onResponse ) plugin.settings.onResponse.call( plugin, jqXHR, textStatus );
               plugin.$submit.prop( 'disabled', false );
             }
           });
