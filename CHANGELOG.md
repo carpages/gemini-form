@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v2.7.0
+
+  - Pass jqXHR object and response status to onResponse callback
+
 ## v2.6.0
 
   - Update Handlebars to v4
