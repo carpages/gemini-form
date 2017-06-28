@@ -1,7 +1,10 @@
 {
   "name": "gemini-form",
   "authors": [
-    {"name": "Matt Rose", "email": "matt@mattrose.ca"}
+    {
+      "name": "Matt Rose",
+      "email": "matt@mattrose.ca"
+    }
   ],
   "main": [
     "gemini.form.js",
@@ -9,6 +12,6 @@
   ],
   "ignore": [],
   "dependencies": {
-    "gemini-loader": "~0"
+    "gemini-loader": "0.3.x"
   }
 }
