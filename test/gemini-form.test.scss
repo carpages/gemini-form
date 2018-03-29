@@ -1,1 +1,6 @@
-@import "../bower_components/gemini-css/init.scss";
+@import 'gemini-css/init';
+
+$gemini-use: (
+  alert: true,
+  buttons: true
+);

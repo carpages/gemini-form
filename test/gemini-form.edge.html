@@ -1,55 +1,97 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Gemini Form Edge Test</title>
-
   <link rel="stylesheet" href="gemini-form.test.css" media="screen">
+  <script>window.G = { D: { _qj: [] } }; G.Q = function (k) { G.D._qj.push(k) };//0.1.0</script>
+  <style>
+    html,
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
 
-  <script>window.G={D:{_qj:[]}};G.Q=function(k){G.D._qj.push(k)};//0.1.0</script>
+    html {
+      padding: 16px;
+    }
+
+    body {
+      max-width: 40rem;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    .form__errors,
+    .field__errors {
+      padding: 8px;
+      color: red;
+      background-color: #fff;
+      border: 1px solid #d6d6d6;
+    }
+
+    .container {
+      flex: 1;
+      background-color: #f8f8f9;
+      border: 1px solid #d6d6d6;
+    }
+  </style>
 </head>
+
 <body>
 
-  <form id="js-ajax-form" action="/edge/test" method="post">
-    <div class="field">
-      <div class="field__input">
-         <label for="name">Name:</label>
-         <input type="text" name="name" id="name" value="" tabindex="1" required/>
-      </div>
-      <div class="field__errors"></div>
-    </div>
+  <div class="container pad">
+    <form id="js-ajax-form" action="/edge/test" method="post">
+      <div class="form__errors"></div>
 
-    <div>
       <div class="field">
-      <div class="field__input">
-        <label for="select-choice">Select Dropdown Choice:</label>
-        <select name="select-choice" id="select-choice" required>
-          <option value="">Choose, yo</option>
-          <option value="Choice 1">Choice 1</option>
-          <option value="Choice 2">Choice 2</option>
-          <option value="Choice 3">Choice 3</option>
-        </select>
+        <div class="field__input">
+          <label for="name">Name:</label>
+          <input class="text-input" type="text" name="name" id="name" value="" tabindex="1" required/>
+        </div>
+        <div class="field__errors"></div>
       </div>
-      <div class="field__errors"></div>
+
+      <div class="field">
+        <div class="field__input">
+          <label for="select-choice">Select Dropdown Choice:</label>
+          <div class="select">
+            <select name="select-choice" id="select-choice" required>
+              <option value="">Choose, yo</option>
+              <option value="Choice 1">Choice 1</option>
+              <option value="Choice 2">Choice 2</option>
+              <option value="Choice 3">Choice 3</option>
+            </select>
+          </div>
+        </div>
+        <div class="field__errors"></div>
       </div>
-    </div>
 
-    <div>
-      <label for="textarea">Textarea:</label>
-      <textarea cols="40" rows="8" name="textarea" id="textarea"></textarea>
-      <div class="field__errors"></div>
-    </div>
+      <div class="field">
+        <label for="textarea">Textarea:</label>
+        <textarea class="text-input full" cols="40" rows="8" name="textarea" id="textarea"></textarea>
+        <div class="field__errors"></div>
+      </div>
 
-    <label>
-      <input type="checkbox" name="checkbox" id="checkbox"/>
-      Checkbox
-      <div class="field__errors"></div>
-    </label>
+      <div class="field">
+        <label>
+          <input type="checkbox" name="checkbox" id="checkbox" /> Checkbox
+          <div class="field__errors"></div>
+        </label>
+      </div>
 
-    <input class="button" type="submit" value="Submit" />
-  </form>
+      <input class="button" type="submit" value="Submit" />
+    </form>
+  </div>
 
   <!-- Load JS. -->
   <script data-main="gemini-form.edge" src="../bower_components/requirejs/require.js"></script>
 </body>
+
 </html>
