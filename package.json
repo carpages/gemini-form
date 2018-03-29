@@ -1,13 +1,15 @@
 {
   "name": "gemini-form",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Gemini Form",
   "author": {
     "name": "Matt Rose",
     "email": "matt@mattrose.ca",
     "url": "http://mattrose.ca"
   },
-  "contributors": ["Jeff Andrews <jeffandrews@me.com>"],
+  "contributors": [
+    "Jeff Andrews <jeffandrews@me.com>"
+  ],
   "main": "gemini.form.js",
   "repository": {
     "type": "git",
