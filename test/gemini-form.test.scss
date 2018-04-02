@@ -1,6 +1,53 @@
+$gemini-use: (
+  alerts: true,
+  grid: true,
+  buttons: true,
+  rules: true,
+  colors: true
+);
+
+$gemini-colors: (red: rgb(250, 10, 10));
+
 @import 'gemini-css/init';
 
-$gemini-use: (
-  alert: true,
-  buttons: true
-);
+html,
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  padding: 16px;
+}
+
+body {
+  max-width: 40rem;
+}
+
+p {
+  margin-bottom: 0;
+}
+
+.container {
+  flex: 1;
+  border: 1px solid #D6D6D6;
+  border-radius: get(spacing) / 6;
+}
+
+.alert--fail,
+.alert-input--fail {
+  padding: get(spacing) / 6;
+  color: getColor(red);
+  background-color: rgba(getColor(red), 0.1);
+  border: 1px solid rgba(getColor(red), 0.4);
+  border-radius: get(spacing) / 6;
+}
+
+.form__errors,
+.field__errors {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
