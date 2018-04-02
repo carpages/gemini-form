@@ -24,6 +24,8 @@ using ajax.
  * @prop {object} customTests {@link gemini.form#customTests}
  * @prop {function} defaultTest {@link gemini.form#defaultTest}
  * @prop {object} templates {@link gemini.form#templates}
+ * @prop {object} customResponseHandlers {@link gemini.form#customResponseHandlers}
+ * @prop {object} disableBuiltInResponseHandlers {@link gemini.form#disableBuiltInResponseHandlers}
  *
  * @example
   <html>
@@ -218,6 +220,101 @@ using ajax.
        */
       defaultTest: function() {
         return !!$( this ).val();
+      },
+
+      /**
+       * An object of custom response handlers for handling your own responses
+       * from the server.
+       *
+       * Expects functions that get passed the response data.
+       * Expected keys:
+       *  - response: Overall response handler. Overwrites entire built-in
+       *              response handler.
+       * The following do not affect built-in handling of responses. They
+       * instead get called alongside the built-in handling. You can disable
+       * built-in handling of responses by setting the disable flags described below.
+       *  - success:  Success status response handler.
+       *  - fail:     Validation fail status response handler.
+       *  - error:    Error status response handler.
+       *  - fallback: Fallback response handler when unhandled status is
+       *              received from server.
+       *
+       * @name gemini.form#customResponseHandlers
+       * @type object
+       * @default {}
+       */
+      customResponseHandlers: {
+        /**
+         * A function that allows you to take full control of what happens when
+         * the ajax response comes back. This function gets passed the response
+         * data from the server.
+         *
+         * @name gemini.form#customResponseHandlers.response
+         * @type function
+         * @default false
+         */
+        response: false,
+
+        /**
+         * A function that allows you to take full control of what happens when
+         * the ajax response comes back with a success status. This function gets
+         * passed the response data from the server.
+         *
+         * @name gemini.form#customResponseHandlers.success
+         * @type function
+         * @default false
+         */
+        success: false,
+
+        /**
+         * A function that allows you to take full control of what happens when
+         * the ajax response comes back with validation errors. This function gets
+         * passed the response data from the server.
+         *
+         * @name gemini.form#customResponseHandlers.fail
+         * @type function
+         * @default false
+         */
+        fail: false,
+
+        /**
+         * A function that allows you to take full control of what happens when
+         * the ajax response comes back with a server error. This function gets
+         * passed the response data from the server.
+         *
+         * @name gemini.form#customResponseHandlers.error
+         * @type function
+         * @default false
+         */
+        error: false,
+
+        /**
+         * A function that allows you to take full control of what happens when
+         * the ajax response comes back with a status other than 'success', 'fail',
+         * or 'error'. This function gets passed the response data from the server.
+         *
+         * @name gemini.form#customResponseHandlers.fallback
+         * @type function
+         * @default false
+         */
+        fallback: false
+      },
+
+      /**
+       * An object that has keys to disable built-in handling of AJAX
+       * server responses.
+       *
+       * @name gemini.form#disableBuiltInResponseHandlers
+       * @type object
+       * @default {}
+       */
+
+      disableBuiltInResponseHandlers: {
+        success: false,
+        fail: false,
+        error: false,
+        fallback: false,
+        all: false
       },
 
       /**
@@ -445,39 +542,121 @@ using ajax.
      **/
     _handleResponse: function( response ) {
       var plugin = this;
+      var customHandlers = plugin.settings.customResponseHandlers;
+      var disabledHandlers = plugin.settings.disableBuiltInResponseHandlers;
 
-      // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
-      switch ( response.status ) {
-        // when call is successful
-        case 'success':
-          plugin.alert({
-            success: true,
-            message: 'Your message was successfully sent.'
-          });
-          plugin.el.reset();
-          break;
+      if ( typeof customHandlers.response === 'function' ) {
+        customHandlers.response.call( plugin, response );
+      } else {
+        // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
+        switch ( response.status ) {
+          // when call is successful
+          case 'success':
+            if ( typeof customHandlers.success === 'function' ) {
+              customHandlers.success.call( plugin, response );
+            }
 
-        // when call is rejected due to invalid data or call conditions
-        case 'fail':
-          plugin.alert({
-            message: 'Please correct the following:',
-            errors: response.data
-          });
-          break;
+            if ( disabledHandlers.success || disabledHandlers.all ) {
+              return;
+            }
 
-        // when call fails due to an error on the server
-        case 'error':
-          plugin.alert({
-            message: response.message
-          });
-          break;
+            plugin._defaultSuccessHandler( response );
+            break;
 
-        // when server doesn't pass right data
-        default:
-          plugin.alert({
-            message:
-              'Something went wrong. Please try again later. Sorry for any inconvenience.'
-          });
+          // when call is rejected due to invalid data or call conditions
+          case 'fail':
+            if ( typeof customHandlers.fail === 'function' ) {
+              customHandlers.fail.call( plugin, response );
+            }
+
+            if ( disabledHandlers.fail || disabledHandlers.all ) {
+              return;
+            }
+
+            plugin._defaultFailHandler( response );
+            break;
+
+          // when call fails due to an error on the server
+          case 'error':
+            if ( typeof customHandlers.error === 'function' ) {
+              customHandlers.error.call( plugin, response );
+            }
+
+            if ( disabledHandlers.error || disabledHandlers.all ) {
+              return;
+            }
+
+            plugin._defaultErrorHandler( response );
+            break;
+
+          // when server doesn't pass right data
+          default:
+            if ( typeof customHandlers.fallback === 'function' ) {
+              customHandlers.fallback.call( plugin, response );
+            }
+
+            if ( disabledHandlers.fallback || disabledHandlers.all ) {
+              return;
+            }
+
+            plugin._defaultFallbackHandler( response );
+        }
+      }
+    },
+
+    _defaultSuccessHandler: function( response ) {
+      var plugin = this;
+
+      plugin.alert({
+        success: true,
+        message: 'Your message was successfully sent.'
+      });
+
+      plugin.el.reset();
+    },
+
+    _defaultErrorHandler: function( response ) {
+      var plugin = this;
+
+      plugin.alert({
+        message: response.message
+      });
+    },
+
+    _defaultFailHandler: function( response ) {
+      var plugin = this;
+
+      plugin.alert({
+        message: 'Please correct the following:',
+        errors: response.data
+      });
+    },
+
+    _defaultFallbackHandler: function( response ) {
+      var plugin = this;
+
+      plugin.alert({
+        message:
+          'Something went wrong. Please try again later. Sorry for any inconvenience.'
+      });
+    },
+
+    /**
+     * Alerts the user with a message
+     *
+     * @method
+     * @name gemini.form#alert
+     * @param {object} data The data to send to the alert template
+     **/
+    alert: function( data, el ) {
+      var plugin = this;
+      var isEl = typeof el !== 'undefined';
+      var isForm = !isEl;
+
+      if ( isForm ) {
+        plugin._formAlert( data );
+      } else {
+        plugin._inputAlert( data, el );
       }
     },
 
@@ -532,8 +711,6 @@ using ajax.
       // grab set id, or generate new div
       var $alert = id ? plugin.$el.find( id ) : $( '<div>' );
 
-      console.log({ $alert });
-
       $el.data( 'form-alert-cache', $alert );
       return $alert;
     },
@@ -550,25 +727,6 @@ using ajax.
         $alert.html( plugin.T.alert( data )).show();
       } else {
         $alert.hide();
-      }
-    },
-
-    /**
-     * Alerts the user with a message
-     *
-     * @method
-     * @name gemini.form#alert
-     * @param {object} data The data to send to the alert template
-     **/
-    alert: function( data, el ) {
-      var plugin = this;
-      var isEl = typeof el !== 'undefined';
-      var isForm = !isEl;
-
-      if ( isForm ) {
-        plugin._formAlert( data );
-      } else {
-        plugin._inputAlert( data, el );
       }
     }
   });
