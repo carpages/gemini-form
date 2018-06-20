@@ -55,9 +55,8 @@ A Gemini plugin that submits forms using ajax, and returns results based on the
   G('#js-ajax-form').form();
  */
 
-define(['gemini', 'gemini.form.templates'], function($, T){
-
-  $.boiler('form', {
+define([ 'gemini', 'gemini.form.templates' ], function( $, T ) {
+  $.boiler( 'form', {
     defaults: {
       /**
        * Callback function after the user has submitted the form
@@ -75,6 +74,22 @@ define(['gemini', 'gemini.form.templates'], function($, T){
        * @default false
        */
       onResponse: false,
+      /**
+       * Callback function after the server has returned a successful response
+       *
+       * @name gemini.form#onSuccess
+       * @type function
+       * @default false
+       */
+      onSuccess: false,
+      /**
+       * Callback function after the server has returned an error
+       *
+       * @name gemini.form#onError
+       * @type function
+       * @default false
+       */
+      onError: false,
       /**
        * Selector of container for the alert message
        *
@@ -100,17 +115,17 @@ define(['gemini', 'gemini.form.templates'], function($, T){
       submit: '_onSubmit'
     },
 
-    init: function(){
+    init: function() {
       var plugin = this;
 
-      //Extend the templates
-      plugin.T = $.extend(T, plugin.settings.templates);
+      // Extend the templates
+      plugin.T = $.extend( T, plugin.settings.templates );
 
-      if(plugin.settings.alertTarget){
-        plugin.$alert = plugin.$el.find(plugin.settings.alertTarget).hide();
+      if ( plugin.settings.alertTarget ) {
+        plugin.$alert = plugin.$el.find( plugin.settings.alertTarget ).hide();
       } else {
-        plugin.$alert = $('<div/>').hide();
-        plugin.$el.prepend(plugin.$alert);
+        plugin.$alert = $( '<div/>' ).hide();
+        plugin.$el.prepend( plugin.$alert );
       }
     },
 
@@ -121,51 +136,63 @@ define(['gemini', 'gemini.form.templates'], function($, T){
      * @method
      * @name gemini.form#_onSubmit
      * @param {object} e Event object
-    **/
-    _onSubmit: function(e){
+     **/
+    _onSubmit: function( e ) {
       e.preventDefault();
 
       var plugin = this;
 
-      if(plugin.settings.onSubmit) plugin.settings.onSubmit.call(plugin);
-      plugin.$el.find('[type="submit"]').prop('disabled', true);
+      if ( plugin.settings.onSubmit ) plugin.settings.onSubmit.call( plugin );
+      plugin.$el.find( '[type="submit"]' ).prop( 'disabled', true );
 
       $.ajax({
-        url: plugin.$el.attr('action'),
+        url: plugin.$el.attr( 'action' ),
         data: plugin.$el.serialize(),
         type: 'POST',
         dataType: 'json',
-        error: function(){
+        error: function() {
           plugin.alert({
             message: 'Sorry, there seems to be an error. Please try again.'
           });
+          if ( plugin.settings.onError ) {
+            plugin.settings.onError.call( plugin );
+          }
         },
-        success: function(response){
+        success: function( response ) {
           // Ajax request based on JSON standard http://labs.omniti.com/labs/jsend
 
-          if(response.status == "success"){
+          if ( response.status == 'success' ) {
             // used when call is successful
             plugin.alert({
               success: true,
               message: 'Your message was successfully sent.'
             });
             plugin.el.reset();
-          }else if(response.status == "fail"){
+
+            if ( plugin.settings.onSuccess ) {
+              plugin.settings.onSuccess.call( plugin );
+            }
+          } else if ( response.status == 'fail' ) {
             // used when call is rejected due to invalid data or call conditions
             plugin.alert({
               message: 'Please correct the following:',
               errors: response.data
             });
-          }else if(response.status == "error"){
+          } else if ( response.status == 'error' ) {
             // used when call fails due to an error on the server
             plugin.alert({
               message: response.message
             });
+            if ( plugin.settings.onError ) {
+              plugin.settings.onError.call( plugin );
+            }
           }
         },
-        complete: function(){
-          if(plugin.settings.onResponse) plugin.settings.onResponse.call(plugin);
-          plugin.$el.find('[type="submit"]').prop('disabled', false);
+        complete: function() {
+          if ( plugin.settings.onResponse ) {
+            plugin.settings.onResponse.call( plugin );
+          }
+          plugin.$el.find( '[type="submit"]' ).prop( 'disabled', false );
         }
       });
     },
@@ -176,11 +203,11 @@ define(['gemini', 'gemini.form.templates'], function($, T){
      * @method
      * @name gemini.form#alert
      * @param {object} data The data to send to the alert template
-    **/
-    alert: function(data){
+     **/
+    alert: function( data ) {
       var plugin = this;
 
-      plugin.$alert[0].innerHTML = plugin.T.alert(data);
+      plugin.$alert[0].innerHTML = plugin.T.alert( data );
       plugin.$alert.show();
     }
   });
@@ -188,5 +215,4 @@ define(['gemini', 'gemini.form.templates'], function($, T){
   // Return the jquery object
   // This way you don't need to require both jquery and the plugin
   return $;
-
 });
