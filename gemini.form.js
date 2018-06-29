@@ -101,6 +101,15 @@ define([ 'gemini', 'gemini.form.templates' ], function( $, T ) {
        */
       alertTarget: false,
       /**
+       * Set to true to append the alerts to the form instead of prepending.
+       * *Note:* By default, it prepends it to the form
+       *
+       * @name gemini.form#alertAppend
+       * @type boolean
+       * @default false
+       */
+      alertAppend: false,
+      /**
        * Precompiled Handlebar templates to replace default.
        * Expecting 'alert' for the alert message.
        *
@@ -125,7 +134,12 @@ define([ 'gemini', 'gemini.form.templates' ], function( $, T ) {
         plugin.$alert = plugin.$el.find( plugin.settings.alertTarget ).hide();
       } else {
         plugin.$alert = $( '<div/>' ).hide();
-        plugin.$el.prepend( plugin.$alert );
+
+        if ( plugin.settings.alertAppend ) {
+          plugin.$el.append( plugin.$alert );
+        } else {
+          plugin.$el.prepend( plugin.$alert );
+        }
       }
     },
 
