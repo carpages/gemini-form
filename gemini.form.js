@@ -187,11 +187,15 @@ define([ 'gemini', 'gemini.form.templates' ], function( $, T ) {
               plugin.settings.onSuccess.call( plugin );
             }
           } else if ( response.status == 'fail' ) {
-            // used when call is rejected due to invalid data or call conditions
-            plugin.alert({
-              message: 'Please correct the following:',
-              errors: response.data
-            });
+            if ( plugin.settings.onFail ) {
+              plugin.settings.onFail.call( plugin, response );
+            } else {
+              // used when call is rejected due to invalid data or call conditions
+              plugin.alert({
+                message: 'Please correct the following:',
+                errors: response.data
+              });
+            }
           } else if ( response.status == 'error' ) {
             // used when call fails due to an error on the server
             plugin.alert({
