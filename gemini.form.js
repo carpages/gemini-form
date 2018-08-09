@@ -140,6 +140,49 @@ using ajax.
       inputAlertParent: '',
 
       /**
+       * Determines whether server validation errors should be shown on the
+       * coordinating input, or only in the form alert bucket.
+       *
+       * @name gemini.form#showServerValidationErrorOnInput
+       * @type boolean
+       * @default false
+       */
+      showServerValidationErrorOnInput: false,
+
+      /**
+       * Determines the class that gets added to the submit button when ajax
+       * is true and the form is submitting.
+       *
+       * @name gemini.form#loadingButtonClass
+       * @type string
+       * @default 'is-loading'
+       */
+      loadingButtonClass: 'is-loading',
+
+      /**
+       * Allows passing of custom messages to show for different form states.
+       *
+       * @name gemini.form#messages
+       * @type object
+       * @default {
+       *   localValidationFail: 'There are errors with your form submission. Please see below.',
+       *   requiredField: 'This field is required',
+       *   serverValidationFail: 'Please correct the following:',
+       *   success: 'Your message was successfully sent.',
+       *   fallbackError: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
+       * }
+       */
+      messages: {
+        localValidationFail:
+          'There are errors with your form submission. Please see below.',
+        requiredField: 'This field is required',
+        serverValidationFail: 'Please correct the following:',
+        success: 'Your message was successfully sent.',
+        fallbackError:
+          'Something went wrong. Please try again later. Sorry for any inconvenience.'
+      },
+
+      /**
        * The CSS module names associated with a node type. This module
        * is passed to the template
        *
@@ -408,11 +451,12 @@ using ajax.
 
       if ( plugin.settings.onSubmit ) plugin.settings.onSubmit.call( plugin );
 
+      var validationStatus = plugin._checkRequirements();
+
       // meets requirements
-      if ( plugin._checkRequirements()) {
+      if ( validationStatus.pass ) {
         if ( plugin.settings.ajax ) {
-          // Disable submit button while ajax-ing
-          plugin.$submit.prop( 'disabled', true );
+          plugin._setSubmitting( true );
 
           // Use ajax
           $.ajax({
@@ -430,13 +474,33 @@ using ajax.
               if ( plugin.settings.onResponse ) {
                 plugin.settings.onResponse.call( plugin, jqXHR, textStatus );
               }
-              plugin.$submit.prop( 'disabled', false );
+              plugin._setSubmitting( false );
             }
           });
         } else {
           // Don't use ajax
           plugin.$el.submit();
         }
+      } else {
+        plugin._handleResponse({
+          status: 'error',
+          message: plugin.settings.localValidationFailMessage
+        });
+      }
+    },
+
+    _setSubmitting: function( isSubmitting ) {
+      var plugin = this;
+      var loadingClass = plugin.settings.loadingButtonClass;
+
+      plugin.submitting = isSubmitting;
+
+      if ( plugin.submitting ) {
+        // Disable submit button while ajax-ing
+        plugin.$submit.prop( 'disabled', true ).addClass( loadingClass );
+      } else {
+        // Reenable submit button when complete
+        plugin.$submit.prop( 'disabled', false ).removeClass( loadingClass );
       }
     },
 
@@ -446,16 +510,20 @@ using ajax.
      * @private
      * @method
      * @name gemini.form#_checkRequirements
-     * @return {boolean} Weather the requirements pass or not
+     * @return {array} Whether the requirements pass or not
      **/
     _checkRequirements: function() {
       var plugin = this;
       var pass = true;
+      var failedInputs = {};
 
       $.each( plugin.requirements, function( i, requirement ) {
         var thisPasses = plugin._checkInput( requirement.el, requirement.test );
 
         if ( !thisPasses ) {
+          var failedInputSelector = '[name="' + requirement.el.name + '"]';
+          failedInputs[failedInputSelector] = requirement.el;
+
           // Add change listener if failed
           requirement.$el.on( requirement.eventName, function() {
             var secondPass = plugin._checkInput(
@@ -464,6 +532,7 @@ using ajax.
             );
 
             if ( secondPass ) {
+              delete failedInputs[failedInputSelector];
               requirement.$el.off( requirement.eventName );
             }
           });
@@ -472,7 +541,10 @@ using ajax.
         pass = pass && thisPasses;
       });
 
-      return pass;
+      return {
+        pass: pass,
+        failedInputs: failedInputs
+      };
     },
 
     /**
@@ -500,7 +572,7 @@ using ajax.
         // Create alert using results object with fallback
         plugin.alert(
           results || {
-            message: 'This field is required'
+            message: plugin.settings.messages.requiredField
           },
           el
         );
@@ -609,7 +681,7 @@ using ajax.
 
       plugin.alert({
         success: true,
-        message: 'Your message was successfully sent.'
+        message: plugin.settings.messages.success
       });
 
       plugin.el.reset();
@@ -627,17 +699,30 @@ using ajax.
       var plugin = this;
 
       plugin.alert({
-        message: 'Please correct the following:',
+        message: plugin.settings.messages.serverValidationFail,
         errors: response.data
       });
+
+      if ( plugin.settings.showServerValidationErrorOnInput ) {
+        var errors = response.data;
+
+        Object.keys( errors ).map( function( inputName ) {
+          var $inputEl = G( '[name="' + inputName + '"]' );
+          plugin.alert(
+            {
+              message: errors[inputName]
+            },
+            $inputEl[0]
+          );
+        });
+      }
     },
 
     _defaultFallbackHandler: function( response ) {
       var plugin = this;
 
       plugin.alert({
-        message:
-          'Something went wrong. Please try again later. Sorry for any inconvenience.'
+        message: plugin.settings.messages.fallbackError
       });
     },
 

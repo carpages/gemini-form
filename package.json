@@ -20,14 +20,18 @@
     "handlebars": "~4"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.6",
     "compass-importer": "^0.4.1",
-    "eslint": "^4.19.1",
-    "eslint-config-carpages": "^1.0.2",
+    "eslint": "^5.3.0",
+    "eslint-config-carpages": "^3.1.1",
+    "fibers": "^3.0.0",
     "grunt": "^1.0.2",
     "grunt-contrib-handlebars": "carpages/grunt-contrib-handlebars#master",
-    "grunt-eslint": "^20.1.0",
-    "grunt-sass": "^2.1.0",
-    "load-grunt-tasks": "^3.5.2",
+    "grunt-eslint": "^21.0.0",
+    "grunt-sass": "^3.0.1",
+    "load-grunt-tasks": "^4.0.0",
+    "node-sass": "^4.9.3",
+    "sass": "^1.10.3",
     "time-grunt": "^1.4.0"
   },
   "license": "MIT"

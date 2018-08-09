@@ -6,7 +6,18 @@ $gemini-use: (
   colors: true
 );
 
-$gemini-colors: (red: rgb(250, 10, 10));
+$gemini-colors: (
+  white: rgb(255, 255, 255),
+  red: rgb(250, 10, 10),
+  green: rgb(10, 250, 10)
+);
+
+$gemini-base: (
+  font-family:
+    unquote(
+      '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Lucida Grande, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol'
+    )
+);
 
 @import 'gemini-css/init';
 
@@ -24,20 +35,38 @@ html {
 }
 
 body {
-  max-width: 40rem;
+  background-color: #f8f8f9;
+  width: 100%;
+  max-width: 60rem;
 }
 
 p {
   margin-bottom: 0;
 }
 
+.field {
+  margin-bottom: get(spacing);
+}
+
 .container {
   flex: 1;
-  border: 1px solid #D6D6D6;
+  border: 1px solid #d6d6d6;
+  border-radius: get(spacing) / 6;
+  background-color: getColor(white);
+}
+
+.alert--success,
+.alert-form--success,
+.alert-input--success {
+  padding: get(spacing) / 6;
+  color: getColor(green);
+  background-color: rgba(getColor(green), 0.1);
+  border: 1px solid rgba(getColor(green), 0.4);
   border-radius: get(spacing) / 6;
 }
 
 .alert--fail,
+.alert-form--fail,
 .alert-input--fail {
   padding: get(spacing) / 6;
   color: getColor(red);
@@ -46,8 +75,40 @@ p {
   border-radius: get(spacing) / 6;
 }
 
-.form__errors,
+.form__alerts,
 .field__errors {
   margin-top: 8px;
   margin-bottom: 8px;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:before {
+    display: none;
+    border: 2px solid currentColor;
+    border-top: 2px solid transparent;
+    border-radius: 999px;
+    width: get(spacing) * 0.75;
+    height: get(spacing) * 0.75;
+    margin-right: get(spacing) / 2;
+    content: '';
+  }
+
+  &.is-loading:before {
+    animation: 2s loadingSpinner infinite linear;
+    display: inline-block;
+  }
+}
+
+@keyframes loadingSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

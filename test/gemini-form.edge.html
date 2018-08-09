@@ -9,49 +9,78 @@
 </head>
 
 <body>
+  <div class="l-row">
+    <div class="l-column">
+      <div class="container fx ai-c jc-c fd-c pad">
+        <h1 class="gamma">Gemini.Form Test</h1>
 
-  <div class="container pad">
-    <form id="js-ajax-form" action="/edge/test" method="post">
-      <div class="form__errors"></div>
+        <div class="box full">
+          <form id="js-ajax-form" action="/edge/test" method="post">
+            <div class="form__alerts"></div>
 
-      <div class="field">
-        <div class="field__input">
-          <label for="name">Name:</label>
-          <input class="text-input" type="text" name="name" id="name" value="" tabindex="1" required/>
+            <div class="field">
+              <div class="field__input">
+                <label for="response-type">Select Response Type:</label>
+                <div class="select">
+                  <select name="response-type" id="response-type">
+                    <option value="error"></option>
+                    <option value="success">Success</option>
+                    <option value="fail">Fail</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field__errors"></div>
+            </div>
+
+            <div class="field">
+              <div class="field__input">
+                <label for="response-message">Response Message:</label>
+                <input class="text-input" type="text" name="response-message" id="response-message" value="Are you a mock turtle?" />
+              </div>
+              <div class="field__errors"></div>
+            </div>
+
+            <div class="field">
+              <div class="field__input">
+                <label for="name">Name:</label>
+                <input class="text-input" type="text" name="name" id="name" value="" required/>
+              </div>
+              <div class="field__errors"></div>
+            </div>
+
+            <div class="field">
+              <div class="field__input">
+                <label for="select-choice">Select Dropdown Choice:</label>
+                <div class="select">
+                  <select name="select-choice" id="select-choice" required>
+                    <option value="">Choose, yo</option>
+                    <option value="choice-one">Choice 1</option>
+                    <option value="choice-two">Choice 2</option>
+                    <option value="choice-three">Choice 3</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field__errors"></div>
+            </div>
+
+            <div class="field">
+              <label for="textarea">Textarea:</label>
+              <textarea class="text-input full" cols="40" rows="8" name="textarea" id="textarea"></textarea>
+              <div class="field__errors"></div>
+            </div>
+
+            <div class="field">
+              <label>
+                <input type="checkbox" name="checkbox" id="checkbox" /> Checkbox
+                <div class="field__errors"></div>
+              </label>
+            </div>
+
+            <button class="button" type="submit">Submit</button>
+          </form>
         </div>
-        <div class="field__errors"></div>
       </div>
-
-      <div class="field">
-        <div class="field__input">
-          <label for="select-choice">Select Dropdown Choice:</label>
-          <div class="select">
-            <select name="select-choice" id="select-choice" required>
-              <option value="">Choose, yo</option>
-              <option value="Choice 1">Choice 1</option>
-              <option value="Choice 2">Choice 2</option>
-              <option value="Choice 3">Choice 3</option>
-            </select>
-          </div>
-        </div>
-        <div class="field__errors"></div>
-      </div>
-
-      <div class="field">
-        <label for="textarea">Textarea:</label>
-        <textarea class="text-input full" cols="40" rows="8" name="textarea" id="textarea"></textarea>
-        <div class="field__errors"></div>
-      </div>
-
-      <div class="field">
-        <label>
-          <input type="checkbox" name="checkbox" id="checkbox" /> Checkbox
-          <div class="field__errors"></div>
-        </label>
-      </div>
-
-      <input class="button" type="submit" value="Submit" />
-    </form>
+    </div>
   </div>
 
   <!-- Load JS. -->
