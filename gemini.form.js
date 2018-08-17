@@ -384,7 +384,10 @@ using ajax.
       // cache
       plugin.$submit = plugin.$el.find( '[type="submit"]' );
       plugin.submitTitle = plugin.$submit.text();
-      plugin.messages = $.extend(plugin.defaultMessages, plugin.settings.messages);
+      plugin.messages = $.extend(
+        plugin.defaultMessages,
+        plugin.settings.messages
+      );
 
       // cache requirements and their tests
       plugin.requirements = [];
@@ -719,7 +722,7 @@ using ajax.
         var errors = response.data;
 
         Object.keys( errors ).map( function( inputName ) {
-          var $inputEl = G( '[name="' + inputName + '"]' );
+          var $inputEl = G( '[name*="' + inputName + '"]' );
           plugin.alert(
             {
               message: errors[inputName]
