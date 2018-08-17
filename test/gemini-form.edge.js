@@ -48,10 +48,29 @@ require([ 'gemini', 'gemini.form', 'jquery.mockjax' ], function( G ) {
     }
   });
 
-  G( '#js-ajax-form' ).form({
+  var $form = G( '#js-ajax-form' );
+  $form.form({
     formAlertTarget: '.form__alerts',
     inputAlertTarget: '.field__errors',
-    inputAlertParent: '.field',
-    showServerValidationErrorOnInput: true
+    inputAlertParent: '.field'
   });
+
+  $form
+    .data( 'form' )
+    .addLifecycleHook( 'success', function( response ) {
+      var plugin = this;
+      console.log( 'success', { response, plugin });
+    })
+    .addLifecycleHook( 'fail', function( response ) {
+      var plugin = this;
+      console.log( 'fail', { response, plugin });
+    })
+    .addLifecycleHook( 'error', function( response ) {
+      var plugin = this;
+      console.log( 'error', { response, plugin });
+    })
+    .addLifecycleHook( 'fallback', function( response ) {
+      var plugin = this;
+      console.log( 'fallback', { response, plugin });
+    });
 });

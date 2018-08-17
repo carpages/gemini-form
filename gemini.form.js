@@ -375,6 +375,13 @@ using ajax.
         'Something went wrong. Please try again later. Sorry for any inconvenience.'
     },
 
+    lifecycleHooks: {
+      success: [],
+      fail: [],
+      error: [],
+      fallback: []
+    },
+
     init: function() {
       var plugin = this;
 
@@ -445,6 +452,24 @@ using ajax.
         e.preventDefault();
         plugin._onSubmit();
       });
+    },
+
+    addLifecycleHook: function( lifecycleEvent, callback ) {
+      var plugin = this;
+      if ( typeof callback !== 'function' ) {
+        console.log( 'Not a function' );
+        return;
+      }
+
+      plugin.lifecycleHooks[lifecycleEvent].push( callback );
+
+      console.log({
+        lifecycleEvent,
+        callback,
+        lifecycleHooks: plugin.lifecycleHooks
+      });
+
+      return plugin;
     },
 
     /**
@@ -647,6 +672,14 @@ using ajax.
               return;
             }
 
+            console.log( plugin.lifecycleHooks );
+            var successLifecycleHooks = plugin.lifecycleHooks.success;
+            if ( successLifecycleHooks.length > 0 ) {
+              $.each( successLifecycleHooks, function( index, callback ) {
+                callback.call( plugin, response );
+              });
+            }
+
             plugin._defaultSuccessHandler( response );
             break;
 
@@ -658,6 +691,14 @@ using ajax.
 
             if ( disabledHandlers.fail || disabledHandlers.all ) {
               return;
+            }
+
+            console.log( plugin.lifecycleHooks );
+            var failLifecycleHooks = plugin.lifecycleHooks.fail;
+            if ( failLifecycleHooks.length > 0 ) {
+              $.each( failLifecycleHooks, function( index, callback ) {
+                callback.call( plugin, response );
+              });
             }
 
             plugin._defaultFailHandler( response );
@@ -673,6 +714,14 @@ using ajax.
               return;
             }
 
+            console.log( plugin.lifecycleHooks );
+            var errorLifecycleHooks = plugin.lifecycleHooks.error;
+            if ( errorLifecycleHooks.length > 0 ) {
+              $.each( errorLifecycleHooks, function( index, callback ) {
+                callback.call( plugin, response );
+              });
+            }
+
             plugin._defaultErrorHandler( response );
             break;
 
@@ -684,6 +733,14 @@ using ajax.
 
             if ( disabledHandlers.fallback || disabledHandlers.all ) {
               return;
+            }
+
+            console.log( plugin.lifecycleHooks );
+            var fallbackLifecycleHooks = plugin.lifecycleHooks.fallback;
+            if ( fallbackLifecycleHooks.length > 0 ) {
+              $.each( fallbackLifecycleHooks, function( index, callback ) {
+                callback.call( plugin, response );
+              });
             }
 
             plugin._defaultFallbackHandler( response );
