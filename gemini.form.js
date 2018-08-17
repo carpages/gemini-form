@@ -173,16 +173,7 @@ using ajax.
        *   fallbackError: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
        * }
        */
-      messages: {
-        submittingTitle: 'Submitting',
-        localValidationFail:
-          'There are errors with your form submission. Please see below.',
-        requiredField: 'This field is required',
-        serverValidationFail: 'Please correct the following:',
-        success: 'Your message was successfully sent.',
-        fallbackError:
-          'Something went wrong. Please try again later. Sorry for any inconvenience.'
-      },
+      messages: {},
 
       /**
        * The CSS module names associated with a node type. This module
@@ -373,6 +364,17 @@ using ajax.
       templates: {}
     },
 
+    defaultMessages: {
+      submittingTitle: 'Submitting',
+      localValidationFail:
+        'There are errors with your form submission. Please see below.',
+      requiredField: 'This field is required',
+      serverValidationFail: 'Please correct the following:',
+      success: 'Your message was successfully sent.',
+      fallbackError:
+        'Something went wrong. Please try again later. Sorry for any inconvenience.'
+    },
+
     init: function() {
       var plugin = this;
 
@@ -382,6 +384,7 @@ using ajax.
       // cache
       plugin.$submit = plugin.$el.find( '[type="submit"]' );
       plugin.submitTitle = plugin.$submit.text();
+      plugin.messages = $.extend(plugin.defaultMessages, plugin.settings.messages);
 
       // cache requirements and their tests
       plugin.requirements = [];
@@ -487,7 +490,7 @@ using ajax.
       } else {
         plugin._handleResponse({
           status: 'error',
-          message: plugin.settings.localValidationFailMessage
+          message: plugin.messages.localValidationFail
         });
       }
     },
@@ -502,7 +505,7 @@ using ajax.
         // Disable submit button while ajax-ing
         plugin.$submit
           .prop( 'disabled', true )
-          .text( plugin.settings.messages.submittingTitle )
+          .text( plugin.messages.submittingTitle )
           .addClass( loadingClass );
       } else {
         // Reenable submit button when complete
@@ -581,7 +584,7 @@ using ajax.
         // Create alert using results object with fallback
         plugin.alert(
           results || {
-            message: plugin.settings.messages.requiredField
+            message: plugin.messages.requiredField
           },
           el
         );
@@ -690,7 +693,7 @@ using ajax.
 
       plugin.alert({
         success: true,
-        message: plugin.settings.messages.success
+        message: plugin.messages.success
       });
 
       plugin.el.reset();
@@ -708,7 +711,7 @@ using ajax.
       var plugin = this;
 
       plugin.alert({
-        message: plugin.settings.messages.serverValidationFail,
+        message: plugin.messages.serverValidationFail,
         errors: response.data
       });
 
@@ -731,7 +734,7 @@ using ajax.
       var plugin = this;
 
       plugin.alert({
-        message: plugin.settings.messages.fallbackError
+        message: plugin.messages.fallbackError
       });
     },
 
