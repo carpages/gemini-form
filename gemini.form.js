@@ -379,8 +379,7 @@ using ajax.
       success: [],
       fail: [],
       error: [],
-      fallback: [],
-      init: []
+      fallback: []
     },
 
     init: function() {
@@ -453,8 +452,6 @@ using ajax.
         e.preventDefault();
         plugin._onSubmit();
       });
-
-      plugin._runLifecycleHooks( 'init' );
     },
 
     addLifecycleHook: function( lifecycleEvent, callback ) {
