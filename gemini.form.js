@@ -379,7 +379,8 @@ using ajax.
       success: [],
       fail: [],
       error: [],
-      fallback: []
+      fallback: [],
+      init: []
     },
 
     init: function() {
@@ -452,6 +453,8 @@ using ajax.
         e.preventDefault();
         plugin._onSubmit();
       });
+
+      plugin._runLifecycleHooks( 'init' );
     },
 
     addLifecycleHook: function( lifecycleEvent, callback ) {
@@ -463,6 +466,17 @@ using ajax.
 
       plugin.lifecycleHooks[lifecycleEvent].push( callback );
       return plugin;
+    },
+
+    _runLifecycleHooks: function( lifecycleEvent, response ) {
+      var plugin = this;
+      var fallbackLifecycleHooks = plugin.lifecycleHooks[lifecycleEvent];
+
+      if ( fallbackLifecycleHooks.length > 0 ) {
+        $.each( fallbackLifecycleHooks, function( _index, callback ) {
+          callback.call( plugin, response );
+        });
+      }
     },
 
     /**
@@ -491,12 +505,8 @@ using ajax.
             data: plugin.$el.serialize(),
             type: 'POST',
             dataType: 'json',
-            error: function() {
-              plugin._handleResponse({ status: null });
-            },
-            success: function( response ) {
-              plugin._handleResponse( response );
-            },
+            error: plugin._handleResponse.bind( plugin ),
+            success: plugin._handleResponse.bind( plugin ),
             complete: function( jqXHR, textStatus ) {
               if ( plugin.settings.onResponse ) {
                 plugin.settings.onResponse.call( plugin, jqXHR, textStatus );
@@ -665,13 +675,7 @@ using ajax.
               return;
             }
 
-            var successLifecycleHooks = plugin.lifecycleHooks.success;
-            if ( successLifecycleHooks.length > 0 ) {
-              $.each( successLifecycleHooks, function( index, callback ) {
-                callback.call( plugin, response );
-              });
-            }
-
+            plugin._runLifecycleHooks( 'success', response );
             plugin._defaultSuccessHandler( response );
             break;
 
@@ -685,13 +689,7 @@ using ajax.
               return;
             }
 
-            var failLifecycleHooks = plugin.lifecycleHooks.fail;
-            if ( failLifecycleHooks.length > 0 ) {
-              $.each( failLifecycleHooks, function( index, callback ) {
-                callback.call( plugin, response );
-              });
-            }
-
+            plugin._runLifecycleHooks( 'fail', response );
             plugin._defaultFailHandler( response );
             break;
 
@@ -705,13 +703,7 @@ using ajax.
               return;
             }
 
-            var errorLifecycleHooks = plugin.lifecycleHooks.error;
-            if ( errorLifecycleHooks.length > 0 ) {
-              $.each( errorLifecycleHooks, function( index, callback ) {
-                callback.call( plugin, response );
-              });
-            }
-
+            plugin._runLifecycleHooks( 'error', response );
             plugin._defaultErrorHandler( response );
             break;
 
@@ -725,13 +717,7 @@ using ajax.
               return;
             }
 
-            var fallbackLifecycleHooks = plugin.lifecycleHooks.fallback;
-            if ( fallbackLifecycleHooks.length > 0 ) {
-              $.each( fallbackLifecycleHooks, function( index, callback ) {
-                callback.call( plugin, response );
-              });
-            }
-
+            plugin._runLifecycleHooks( 'fallback', response );
             plugin._defaultFallbackHandler( response );
         }
       }
