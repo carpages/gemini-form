@@ -165,6 +165,7 @@ using ajax.
        * @name gemini.form#messages
        * @type object
        * @default {
+       *   submittingTitle: 'Submitting',
        *   localValidationFail: 'There are errors with your form submission. Please see below.',
        *   requiredField: 'This field is required',
        *   serverValidationFail: 'Please correct the following:',
@@ -173,6 +174,7 @@ using ajax.
        * }
        */
       messages: {
+        submittingTitle: 'Submitting',
         localValidationFail:
           'There are errors with your form submission. Please see below.',
         requiredField: 'This field is required',
@@ -379,6 +381,7 @@ using ajax.
 
       // cache
       plugin.$submit = plugin.$el.find( '[type="submit"]' );
+      plugin.submitTitle = plugin.$submit.text();
 
       // cache requirements and their tests
       plugin.requirements = [];
@@ -497,10 +500,16 @@ using ajax.
 
       if ( plugin.submitting ) {
         // Disable submit button while ajax-ing
-        plugin.$submit.prop( 'disabled', true ).addClass( loadingClass );
+        plugin.$submit
+          .prop( 'disabled', true )
+          .text( plugin.settings.messages.submittingTitle )
+          .addClass( loadingClass );
       } else {
         // Reenable submit button when complete
-        plugin.$submit.prop( 'disabled', false ).removeClass( loadingClass );
+        plugin.$submit
+          .prop( 'disabled', false )
+          .text( plugin.submitTitle )
+          .removeClass( loadingClass );
       }
     },
 
