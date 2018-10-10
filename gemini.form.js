@@ -170,6 +170,7 @@ using ajax.
        *   requiredField: 'This field is required',
        *   serverValidationFail: 'Please correct the following:',
        *   success: 'Your message was successfully sent.',
+       *   imageTooLargeError: 'The image you are trying to upload is too large. Try again with a smaller image.',
        *   fallbackError: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
        * }
        */
@@ -234,6 +235,15 @@ using ajax.
         default: 'change',
         input: 'keyup'
       },
+
+      /**
+       * If true, will try to use FormData to upload form data with a file input.
+       *
+       * @name gemini.form#supportFileUpload
+       * @type boolean
+       * @default false
+       */
+      supportFileUpload: false,
 
       /**
        * Map of selectors pointing to functions for writing custom tests. These
@@ -371,11 +381,14 @@ using ajax.
       requiredField: 'This field is required',
       serverValidationFail: 'Please correct the following:',
       success: 'Your message was successfully sent.',
+      imageTooLargeError:
+        'The image you are trying to upload is too large. Try again with a smaller image.',
       fallbackError:
         'Something went wrong. Please try again later. Sorry for any inconvenience.'
     },
 
     lifecycleHooks: {
+      response: [],
       success: [],
       fail: [],
       error: [],
@@ -489,17 +502,17 @@ using ajax.
 
       if ( plugin.settings.onSubmit ) plugin.settings.onSubmit.call( plugin );
 
-      var validationStatus = plugin._checkRequirements();
+      var validationStatus = ( plugin.validationStatus = plugin._checkRequirements());
 
       // meets requirements
       if ( validationStatus.pass ) {
         if ( plugin.settings.ajax ) {
           plugin._setSubmitting( true );
 
-          // Use ajax
-          $.ajax({
+          var data = plugin._getFormData();
+          var ajaxOptions = {
             url: plugin.$el.attr( 'action' ),
-            data: plugin.$el.serialize(),
+            data: data,
             type: 'POST',
             dataType: 'json',
             error: plugin._handleResponse.bind( plugin ),
@@ -510,7 +523,15 @@ using ajax.
               }
               plugin._setSubmitting( false );
             }
-          });
+          };
+
+          if ( plugin.settings.supportFileUpload ) {
+            ajaxOptions.processData = false;
+            ajaxOptions.contentType = false;
+          }
+
+          // Use ajax
+          $.ajax( ajaxOptions );
         } else {
           // Don't use ajax
           plugin.$el.submit();
@@ -521,6 +542,17 @@ using ajax.
           message: plugin.messages.localValidationFail
         });
       }
+    },
+
+    _getFormData: function() {
+      var plugin = this;
+
+      if ( plugin.settings.supportFileUpload && typeof FormData === 'function' ) {
+        var formData = new FormData( plugin.el );
+        return formData;
+      }
+
+      return plugin.$el.serialize();
     },
 
     _setSubmitting: function( isSubmitting ) {
@@ -657,6 +689,8 @@ using ajax.
       var customHandlers = plugin.settings.customResponseHandlers;
       var disabledHandlers = plugin.settings.disableBuiltInResponseHandlers;
 
+      plugin._runLifecycleHooks( 'response', response );
+
       if ( typeof customHandlers.response === 'function' ) {
         customHandlers.response.call( plugin, response );
       } else {
@@ -764,6 +798,13 @@ using ajax.
 
     _defaultFallbackHandler: function( response ) {
       var plugin = this;
+
+      if ( plugin.settings.supportFileUpload && response.status === 413 ) {
+        plugin.alert({
+          message: plugin.messages.imageTooLargeError
+        });
+        return;
+      }
 
       plugin.alert({
         message: plugin.messages.fallbackError
