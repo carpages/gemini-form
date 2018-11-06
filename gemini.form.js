@@ -412,40 +412,7 @@ using ajax.
       // cache requirements and their tests
       plugin.requirements = [];
 
-      $.each( plugin.settings.customTests, function( key, value ) {
-        $( key ).each( function() {
-          var $el = $( this );
-          $el.data( 'usesCustomTest', true );
-
-          var eventType =
-            plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
-            plugin.settings.eventTypes['default'];
-
-          plugin.requirements.push({
-            el: this,
-            $el: $el,
-            test: value,
-            eventName: eventType + '.geminiform'
-          });
-        });
-      });
-
-      plugin.$el.find( '[required]' ).each( function() {
-        var $el = $( this );
-
-        var eventType =
-          plugin.settings.eventTypes[this.nodeName.toLowerCase()] ||
-          plugin.settings.eventTypes['default'];
-
-        if ( !$el.data( 'usesCustomTest' )) {
-          plugin.requirements.push({
-            el: this,
-            $el: $( this ),
-            test: null,
-            eventName: eventType + '.geminiform'
-          });
-        }
-      });
+      plugin.configureValidations();
 
       // user has set custom form alert target
       if ( plugin.settings.formAlertTarget ) {
@@ -465,6 +432,55 @@ using ajax.
         e.preventDefault();
         plugin._onSubmit();
       });
+    },
+
+    configureValidations: function() {
+      var plugin = this;
+
+      $.each( plugin.settings.customTests, function( key, value ) {
+        $( key ).each( function() {
+          plugin.addValidation( this, value );
+        });
+      });
+
+      plugin.$el.find( '[required]' ).each( function() {
+        plugin.addRequiredValidation( this );
+      });
+    },
+
+    addValidation: function( el, testFn ) {
+      var plugin = this;
+
+      $( el ).data( 'usesCustomTest', true );
+
+      plugin.addRequirement({
+        el: el,
+        test: testFn
+      });
+    },
+
+    addRequiredValidation: function( el ) {
+      var plugin = this;
+
+      if ( !$( el ).data( 'usesCustomTest' )) {
+        plugin.addRequirement({
+          el: el,
+          test: plugin.settings.defaultTest
+        });
+      }
+    },
+
+    addRequirement: function( req ) {
+      var plugin = this;
+
+      var eventType =
+        plugin.settings.eventTypes[req.el.nodeName.toLowerCase()] ||
+        plugin.settings.eventTypes['default'];
+
+      req.eventName = eventType + '.geminiform';
+      req.$el = $( req.el );
+
+      plugin.requirements.push( req );
     },
 
     addLifecycleHook: function( lifecycleEvent, callback ) {
