@@ -80,13 +80,23 @@ using ajax.
   $.boiler( 'form', {
     defaults: {
       /**
-       * Weather to send ajax request
+       * Whether to send ajax request
        *
        * @name gemini.form#ajax
        * @type boolean
        * @default true
        */
       ajax: true,
+
+      /**
+       * Additional ajax options to pass to the jQuery ajax call.
+       * Overrides defaults.
+       *
+       * @name gemini.form#ajax
+       * @type object
+       * @default {}
+       */
+      ajaxOptions: {},
 
       /**
        * Callback function after the user has submitted the form
@@ -526,20 +536,24 @@ using ajax.
           plugin._setSubmitting( true );
 
           var data = plugin._getFormData();
-          var ajaxOptions = {
-            url: plugin.$el.attr( 'action' ),
-            data: data,
-            type: 'POST',
-            dataType: 'json',
-            error: plugin._handleResponse.bind( plugin ),
-            success: plugin._handleResponse.bind( plugin ),
-            complete: function( jqXHR, textStatus ) {
-              if ( plugin.settings.onResponse ) {
-                plugin.settings.onResponse.call( plugin, jqXHR, textStatus );
+          var ajaxOptions = $.extend(
+            {},
+            {
+              url: plugin.$el.attr( 'action' ),
+              data: data,
+              type: 'POST',
+              dataType: 'json',
+              error: plugin._handleResponse.bind( plugin ),
+              success: plugin._handleResponse.bind( plugin ),
+              complete: function( jqXHR, textStatus ) {
+                if ( plugin.settings.onResponse ) {
+                  plugin.settings.onResponse.call( plugin, jqXHR, textStatus );
+                }
+                plugin._setSubmitting( false );
               }
-              plugin._setSubmitting( false );
-            }
-          };
+            },
+            plugin.setting.ajaxOptions
+          );
 
           if ( plugin.settings.supportFileUpload ) {
             ajaxOptions.processData = false;
@@ -642,7 +656,7 @@ using ajax.
      * @method
      * @name gemini.form#_checkInput
      * @param {object} el The element that you're checking
-     * @return {boolean} Weather the input has a value or not
+     * @return {boolean} Whether the input has a value or not
      **/
     _checkInput: function( el, test ) {
       var plugin = this;
