@@ -552,7 +552,7 @@ using ajax.
                 plugin._setSubmitting( false );
               }
             },
-            plugin.setting.ajaxOptions
+            plugin.settings.ajaxOptions
           );
 
           if ( plugin.settings.supportFileUpload ) {
