@@ -426,15 +426,23 @@ using ajax.
 
       // user has set custom form alert target
       if ( plugin.settings.formAlertTarget ) {
-        plugin.$el.data(
-          'form-alert-cache',
-          plugin.$el.find( plugin.settings.formAlertTarget ).hide()
-        );
+        var $formAlertTarget = plugin.$el.find( plugin.settings.formAlertTarget );
+        plugin.$el.data( 'form-alert-cache', $formAlertTarget );
+
+        if ( $formAlertTarget.children().length === 0 ) {
+          $formAlertTarget.hide();
+        }
       }
 
       // user has set custom input alert target
       if ( plugin.settings.inputAlertTarget ) {
-        plugin.$el.find( plugin.settings.inputAlertTarget ).hide();
+        var $inputAlerts = plugin.$el.find( plugin.settings.inputAlertTarget );
+        $.each( $inputAlerts, function() {
+          var $inputAlert = $( this );
+          if ( $inputAlert.children().length < 1 ) {
+            $inputAlert.hide();
+          }
+        });
       }
 
       // use button click to byPass default submit
