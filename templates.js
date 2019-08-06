@@ -25,7 +25,7 @@ this["Templates"]["Default"]["Form"]["alert"] = Handlebars.template({"1":functio
 },"3":function(container,depth0,helpers,partials,data) {
     return "fail";
 },"5":function(container,depth0,helpers,partials,data) {
-    var helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "    <p class=\""
     + alias4(((helper = (helper = helpers.module || (depth0 != null ? depth0.module : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"module","hash":{},"data":data}) : helper)))
@@ -33,7 +33,7 @@ this["Templates"]["Default"]["Form"]["alert"] = Handlebars.template({"1":functio
     + alias4(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"message","hash":{},"data":data}) : helper)))
     + "</p>\n";
 },"7":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {};
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
   return "    <ul class=\""
     + container.escapeExpression(((helper = (helper = helpers.module || (depth0 != null ? depth0.module : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"module","hash":{},"data":data}) : helper)))
@@ -45,7 +45,7 @@ this["Templates"]["Default"]["Form"]["alert"] = Handlebars.template({"1":functio
     + container.escapeExpression(container.lambda(depth0, depth0))
     + "\n        </li>\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    var stack1, helper, alias1=depth0 != null ? depth0 : {}, alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
+    var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div class=\"gemini-form-alert "
     + alias4(((helper = (helper = helpers.module || (depth0 != null ? depth0.module : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"module","hash":{},"data":data}) : helper)))

@@ -68,10 +68,7 @@ using ajax.
     define([ 'gemini', 'gemini.form.templates' ], factory );
   } else if ( typeof exports === 'object' ) {
     // Node/CommonJS
-    module.exports = factory(
-      require( 'gemini-loader' ),
-      require( './templates.js' )
-    );
+    module.exports = factory( require( 'gemini-loader' ), require( './templates.js' ));
   } else {
     // Browser globals
     factory( G, Templates.Default.Form );
@@ -386,15 +383,13 @@ using ajax.
 
     defaultMessages: {
       submittingTitle: 'Submitting',
-      localValidationFail:
-        'There are errors with your form submission. Please see below.',
+      localValidationFail: 'There are errors with your form submission. Please see below.',
       requiredField: 'This field is required',
       serverValidationFail: 'Please correct the following:',
       success: 'Your message was successfully sent.',
       imageTooLargeError:
         'The image you are trying to upload is too large. Try again with a smaller image.',
-      fallbackError:
-        'Something went wrong. Please try again later. Sorry for any inconvenience.'
+      fallbackError: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
     },
 
     lifecycleHooks: {
@@ -414,10 +409,7 @@ using ajax.
       // cache
       plugin.$submit = plugin.$el.find( '[type="submit"]' );
       plugin.submitTitle = plugin.$submit.text();
-      plugin.messages = $.extend(
-        plugin.defaultMessages,
-        plugin.settings.messages
-      );
+      plugin.messages = $.extend( plugin.defaultMessages, plugin.settings.messages );
 
       // cache requirements and their tests
       plugin.requirements = [];
@@ -636,10 +628,7 @@ using ajax.
 
           // Add change listener if failed
           requirement.$el.on( requirement.eventName, function() {
-            var secondPass = plugin._checkInput(
-              requirement.el,
-              requirement.test
-            );
+            var secondPass = plugin._checkInput( requirement.el, requirement.test );
 
             if ( secondPass ) {
               delete failedInputs[failedInputSelector];
@@ -688,9 +677,7 @@ using ajax.
         );
 
         if ( $el.is( 'select' ) && plugin.settings.selectWrapper ) {
-          $el
-            .parent( plugin.settings.selectWrapperClass )
-            .addClass( plugin.settings.errorClass );
+          $el.parent( plugin.settings.selectWrapperClass ).addClass( plugin.settings.errorClass );
         } else {
           // Set status
           $el.addClass( plugin.settings.errorClass );
@@ -702,9 +689,7 @@ using ajax.
         plugin.alert( false, el );
 
         if ( $el.is( 'select' ) && plugin.settings.selectWrapper ) {
-          $el
-            .parent( plugin.settings.selectWrapperClass )
-            .removeClass( plugin.settings.errorClass );
+          $el.parent( plugin.settings.selectWrapperClass ).removeClass( plugin.settings.errorClass );
         } else {
           // Remove status
           $el.removeClass( plugin.settings.errorClass );

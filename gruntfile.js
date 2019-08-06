@@ -1,9 +1,5 @@
 'use strict';
 
-var sass = require( 'sass' );
-var nodeSass = require( 'node-sass' );
-var compassImporter = require( 'compass-importer' );
-
 module.exports = function( grunt ) {
   // Load all grunt tasks
   require( 'load-grunt-tasks' )( grunt );
@@ -54,9 +50,6 @@ module.exports = function( grunt ) {
       }
     },
     eslint: {
-      options: {
-        configFile: '.eslintrc.js'
-      },
       target: [ 'gemini.form.js' ]
     },
     connect: {
@@ -69,8 +62,8 @@ module.exports = function( grunt ) {
     },
     sass: {
       options: {
-        implementation: nodeSass,
-        importer: compassImporter,
+        implementation: require( 'node-sass' ),
+        importer: require( 'compass-importer' ),
         includePaths: [ 'bower_components' ]
       },
       dist: {
@@ -175,9 +168,6 @@ module.exports = function( grunt ) {
   });
 
   // Default task.
-  grunt.registerTask( 'default', [
-    'sass:dist',
-    'eslint' /*, 'connect', 'qunit' */
-  ]);
+  grunt.registerTask( 'default', [ 'sass:dist', 'eslint' /*, 'connect', 'qunit' */]);
   grunt.registerTask( 'ci', [ 'default' /*, 'saucelabs-qunit' */]);
 };

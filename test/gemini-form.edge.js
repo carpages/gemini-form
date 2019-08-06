@@ -17,13 +17,11 @@ require([ 'gemini', 'gemini.form', 'jquery.mockjax' ], function( G ) {
     url: '/edge/test',
     responseTime: 1500,
     response: function( settings ) {
-      var responseData = settings.data
-        .split( '&' )
-        .reduce( function( accumulator, current ) {
-          var [ key, value ] = current.split( '=' );
-          accumulator[key] = value;
-          return accumulator;
-        }, {});
+      var responseData = settings.data.split( '&' ).reduce( function( accumulator, current ) {
+        var [ key, value ] = current.split( '=' );
+        accumulator[key] = value;
+        return accumulator;
+      }, {});
 
       var responseType = responseData['response-type'];
 
@@ -49,14 +47,17 @@ require([ 'gemini', 'gemini.form', 'jquery.mockjax' ], function( G ) {
   });
 
   var $form = G( '#js-ajax-form' );
+
+  // Initialize Form
   $form.form({
     formAlertTarget: '.form__alerts',
     inputAlertTarget: '.field__errors',
     inputAlertParent: '.field'
   });
 
-  $form
-    .data( 'form' )
+  // Add Lifecycle Hooks
+  var $formInstance = $form.data( 'form' );
+  $formInstance
     .addLifecycleHook( 'success', function( response ) {
       var plugin = this;
       console.log( 'success', { response, plugin });
