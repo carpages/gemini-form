@@ -392,24 +392,30 @@ using ajax.
       fallbackError: 'Something went wrong. Please try again later. Sorry for any inconvenience.'
     },
 
-    lifecycleHooks: {
-      response: [],
-      success: [],
-      fail: [],
-      error: [],
-      fallback: []
-    },
+    lifecycleHooks: {},
 
     init: function() {
       var plugin = this;
 
       // extend the templates
-      plugin.T = $.extend( T, plugin.settings.templates );
+      plugin.T = $.extend({}, T, plugin.settings.templates );
+
+      plugin.lifecycleHooks = $.extend(
+        {},
+        {
+          response: [],
+          success: [],
+          fail: [],
+          error: [],
+          fallback: []
+        },
+        plugin.settings.lifecycleHooks
+      );
 
       // cache
       plugin.$submit = plugin.$el.find( '[type="submit"]' );
       plugin.submitTitle = plugin.$submit.text();
-      plugin.messages = $.extend( plugin.defaultMessages, plugin.settings.messages );
+      plugin.messages = $.extend({}, plugin.defaultMessages, plugin.settings.messages );
 
       // cache requirements and their tests
       plugin.requirements = [];
