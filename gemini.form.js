@@ -62,19 +62,10 @@ using ajax.
   G('#js-ajax-form').form();
  */
 
-( function( factory ) {
-  if ( typeof define === 'function' && define.amd ) {
-    // AMD. Register as an anonymous module.
-    define([ 'gemini', 'gemini.form.templates' ], factory );
-  } else if ( typeof exports === 'object' ) {
-    // Node/CommonJS
-    module.exports = factory( require( 'gemini-loader' ), require( './templates.js' ));
-  } else {
-    // Browser globals
-    factory( G, Templates.Default.Form );
-  }
-})( function( $, T ) {
-  $.boiler( 'form', {
+import $ from 'gemini-loader';
+import T from './templates/alert.hbs';
+
+$.boiler( 'form', {
     defaults: {
       /**
        * Whether to send ajax request
@@ -932,5 +923,4 @@ using ajax.
 
   // Return the jquery object
   // This way you don't need to require both jquery and the plugin
-  return $;
-});
+  export default $;
