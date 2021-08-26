@@ -16,7 +16,7 @@
     "url": "https://github.com/carpages/gemini-form"
   },
   "dependencies": {
-    "gemini-loader": "carpages/gemini-loader#next",
+    "gemini-loader": "0.6.0-alpha.1",
     "handlebars": "4.x"
   },
   "prettier": {
