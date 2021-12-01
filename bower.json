@@ -7,7 +7,7 @@
     }
   ],
   "main": ["gemini.form.js", "templates.js"],
-  "ignore": ["test", "templates"],
+  "ignore": ["test"],
   "dependencies": {
     "gemini-loader": "0.3.x",
     "handlebars": "4.x"
